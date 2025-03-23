@@ -6,12 +6,22 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.collections.FXCollections?>
 <VBox xmlns="http:javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="org.example.patientinformation.SignUpController" spacing="10" alignment="CENTER" prefWidth="300">
+      fx:controller="org.example.patientinformation.SignUpController" spacing="10" alignment="CENTER" prefWidth="300">
     <Label text="Sign Up" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
     <TextField fx:id="nameField" promptText="Name"/>
     <TextField fx:id="emailField" promptText="Email"/>
     <TextField fx:id="passwordField" promptText="Password"/>
+    <ComboBox fx:id="roleComboBox" promptText="Select Role">
+        <items>
+            <FXCollections fx:factory="observableArrayList">
+                <String fx:value="Patient"/>
+                <String fx:value="Doctor"/>
+                <String fx:value="Administrator"/>
+            </FXCollections>
+        </items>
+    </ComboBox>
     <Button text="Sign Up" onAction="#onSignUpClick"/>
     <Label fx:id="messageLabel" text=""/>
 </VBox>
