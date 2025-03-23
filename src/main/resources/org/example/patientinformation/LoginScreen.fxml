@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.patientinformation.LoginController" spacing="10" alignment="CENTER" prefWidth="300">
+    <Label text="Login" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+    <TextField fx:id="emailField" promptText="Email"/>
+    <TextField fx:id="passwordField" promptText="Password"/>
+    <Button text="Login" onAction="#onLoginClick"/>
+    <Label fx:id="messageLabel" text=""/>
+</VBox>
