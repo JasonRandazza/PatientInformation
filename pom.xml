@@ -14,6 +14,19 @@
 <junit.version>5.10.2</junit.version>  </properties>
 
   <dependencies>
+    <!-- Firebase Admin SDK -->
+    <dependency>
+      <groupId>com.google.firebase</groupId>
+      <artifactId>firebase-admin</artifactId>
+      <version>9.2.0</version> <!-- Use latest stable version -->
+    </dependency>
+
+    <!-- JSON parsing (required by Firebase) -->
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.10.1</version>
+    </dependency>
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-controls</artifactId>
@@ -76,7 +89,7 @@
             <!-- Default configuration for running with: mvn clean javafx:run -->
             <id>default-cli</id>
             <configuration>
-              <mainClass>org.example.patientinformation/org.example.patientinformation.HelloApplication</mainClass>
+              <mainClass>org.example.patientinformation/org.example.patientinformation.PatientInformationApp</mainClass>
               <launcher>app</launcher>
               <jlinkZipName>app</jlinkZipName>
               <jlinkImageName>app</jlinkImageName>
