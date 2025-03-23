@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
@@ -19,6 +20,8 @@ public class SignUpController {
     @FXML
     private TextField nameField;
     @FXML
+    private ComboBox<String> roleComboBox;
+    @FXML
     private Label messageLabel;
 
     @FXML
@@ -26,13 +29,15 @@ public class SignUpController {
         String email = emailField.getText();
         String password = passwordField.getText();
         String name = nameField.getText();
+        String role = roleComboBox.getValue();
 
-        if(email.isEmpty() || password.isEmpty() || name.isEmpty()) {
-            messageLabel.setText("Please fill out all fields.");
+        if(email.isEmpty() || password.isEmpty() || name.isEmpty() || role == null) {
+            messageLabel.setText("Please fill out all fields and select a role.");
             return;
         }
 
-        PatientService.createPatientAccount(email, password, name);
+        //Create user account with selected role
+        UserService.createPatientAccount(email, password, name, role);
         messageLabel.setText("Account created! Please log in.");
     }
 
