@@ -37,7 +37,7 @@ public class SignUpController {
         }
 
         //Create user account with selected role
-        UserService.createPatientAccount(email, password, name, role);
+     //   UserService.createPatientAccount(email, password, name, role);
         messageLabel.setText("Account created! Please log in.");
     }
 
