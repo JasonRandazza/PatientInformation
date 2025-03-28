@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.effect.Light.Distant?>
+<?import javafx.scene.effect.Lighting?>
+<?import javafx.scene.effect.Shadow?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane prefHeight="698.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.patientinformation.StartMenuController">
+    <top>
+        <StackPane>
+            <Text fontSmoothingType="LCD" style="-fx-font-size: 24px;" text="Welcome to the Patient Information App!" textAlignment="CENTER" wrappingWidth="748.4265344142914">
+            <font>
+               <Font name="Bodoni MT" size="15.0" />
+            </font></Text>
+        </StackPane>
+    </top>
+
+    <center>
+        <HBox alignment="CENTER" prefHeight="600.0" prefWidth="600.0" spacing="40.0">
+            <Button fx:id="patientButton" onAction="#handlePatientButton" prefHeight="30.0" prefWidth="75.0" text="Patient">
+            <cursor>
+               <Cursor fx:constant="CLOSED_HAND" />
+            </cursor>
+            <font>
+               <Font name="System Bold" size="15.0" />
+            </font>
+            <effect>
+               <Lighting>
+                  <bumpInput>
+                     <Shadow blurType="GAUSSIAN">
+                        <color>
+                           <Color red="0.4099999964237213" />
+                        </color>
+                     </Shadow>
+                  </bumpInput>
+                  <light>
+                     <Light.Distant>
+                        <color>
+                           <Color red="1.0" green="0.644444465637207" blue="0.644444465637207" />
+                        </color>
+                     </Light.Distant>
+                  </light>
+               </Lighting>
+            </effect></Button>
+            <Button fx:id="doctorButton" onAction="#handleDoctorButton" prefHeight="30.0" prefWidth="75.0" text="Doctor" textOverrun="CLIP">
+            <cursor>
+               <Cursor fx:constant="CLOSED_HAND" />
+            </cursor>
+            <font>
+               <Font name="System Bold" size="15.0" />
+            </font>
+            <effect>
+               <Lighting>
+                  <bumpInput>
+                     <Shadow />
+                  </bumpInput>
+                  <light>
+                     <Light.Distant>
+                        <color>
+                           <Color red="0.6000000238418579" green="0.846666693687439" blue="1.0" />
+                        </color>
+                     </Light.Distant>
+                  </light>
+               </Lighting>
+            </effect></Button>
+        </HBox>
+    </center>
+</BorderPane>

@@ -11,11 +11,11 @@ import java.io.IOException;
 public class PatientInformationApp extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FirestoreContext.initialize();
-        Firestore db = FirestoreContext.getDB();
-        FXMLLoader fxmlLoader = new FXMLLoader(PatientInformationApp.class.getResource("hello-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("Hello!");
+//        FirestoreContext.initialize();
+//        Firestore db = FirestoreContext.getDB();
+        FXMLLoader fxmlLoader = new FXMLLoader(PatientInformationApp.class.getResource("StartMenu.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 750, 750);
+        stage.setTitle("Hospital App");
         stage.setScene(scene);
         stage.show();
     }

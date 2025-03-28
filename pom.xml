@@ -14,14 +14,12 @@
 <junit.version>5.10.2</junit.version>  </properties>
 
   <dependencies>
-    <!-- Firebase Admin SDK -->
     <dependency>
       <groupId>com.google.firebase</groupId>
       <artifactId>firebase-admin</artifactId>
       <version>9.2.0</version> <!-- Use latest stable version -->
     </dependency>
 
-    <!-- JSON parsing (required by Firebase) -->
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
@@ -86,7 +84,6 @@
         <version>0.0.8</version>
         <executions>
           <execution>
-            <!-- Default configuration for running with: mvn clean javafx:run -->
             <id>default-cli</id>
             <configuration>
               <mainClass>org.example.patientinformation/org.example.patientinformation.PatientInformationApp</mainClass>
