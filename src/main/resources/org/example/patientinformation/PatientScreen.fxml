@@ -2,10 +2,26 @@
 
 <?import java.lang.*?>
 <?import java.util.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.patientinformation.PatientLoginScreenController">
+    <padding>
+        <Insets top="30" right="30" bottom="30" left="30"/>
+    </padding>
+
     <Label text="Welcome to the Patient Screen" style="-fx-font-size: 24px;" />
+
+    <Label text="Email:" />
+    <TextField fx:id="emailField" promptText="Enter your email" />
+
+    <Label text="Password:" />
+    <PasswordField fx:id="passwordField" promptText="Enter your password" />
+
+    <HBox spacing="15" alignment="CENTER">
+        <Button fx:id="signInButton" text="Sign In" onAction="#handleSignIn" />
+        <Button fx:id="registerButton" text="Register" onAction="#handleRegister" />
+    </HBox>
 </VBox>
