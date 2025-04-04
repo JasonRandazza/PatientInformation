@@ -24,4 +24,6 @@
         <Button fx:id="signInButton" text="Sign In" onAction="#handleSignIn" />
         <Button fx:id="registerButton" text="Register" onAction="#handleRegister" />
     </HBox>
+
+    <Button fx:id="goBackButton" text="Go Back" onAction="#handleGoBack" />
 </VBox>
