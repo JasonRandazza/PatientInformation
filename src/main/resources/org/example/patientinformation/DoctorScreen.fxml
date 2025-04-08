@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<VBox alignment="CENTER" spacing="15.0"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.patientinformation.DoctorLoginScreenController">
 
-<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.patientinformation.DoctorLoginScreenController">
-    <Label text="Welcome to the Doctor Screen" style="-fx-font-size: 24px;" />
+    <Label text="Doctor Login" style="-fx-font-size: 24px;" />
+
+    <TextField fx:id="usernameField" promptText="Username" />
+    <TextField fx:id="emailField" promptText="Email" />
+    <PasswordField fx:id="passwordField" promptText="Password" />
+
+    <HBox spacing="10">
+        <Button text="Login" onAction="#onLogin" />
+        <Button text="Go Back" onAction="#onGoBack" />
+    </HBox>
 </VBox>
