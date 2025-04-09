@@ -1,29 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.patientinformation.PatientLoginScreenController">
-    <padding>
-        <Insets top="30" right="30" bottom="30" left="30"/>
-    </padding>
+<HBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.patientinformation.PatientLoginScreenController"
+      prefHeight="600" prefWidth="900">
 
-    <Label text="Welcome to the Patient Screen" style="-fx-font-size: 24px;" />
+    <VBox alignment="CENTER" prefWidth="450"
+          style="-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #3d8bff, #6bc1ff);">
+<!--        <ImageView fitWidth="450" preserveRatio="true">-->
+<!--            <image>-->
+<!--                <Image url="@/images/leftPic.jpg" />-->
+<!--            </image>-->
+<!--        </ImageView>    -->
+    </VBox>
 
-    <Label text="Email:" />
-    <TextField fx:id="emailField" promptText="Enter your email" />
+    <VBox alignment="CENTER" spacing="20" prefWidth="450"
+          style="-fx-background-color: #ffffff; -fx-padding: 40;">
 
-    <Label text="Password:" />
-    <PasswordField fx:id="passwordField" promptText="Enter your password" />
+        <VBox alignment="CENTER" spacing="15"
+              style="-fx-background-color: #ffffff; -fx-background-radius: 15; -fx-padding: 30; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 5);">
 
-    <HBox spacing="15" alignment="CENTER">
-        <Button fx:id="signInButton" text="Sign In" onAction="#handleSignIn" />
-        <Button fx:id="registerButton" text="Register" onAction="#handleRegister" />
-    </HBox>
+            <Label text="Login" style="-fx-font-size: 24px; -fx-font-family: 'Segoe UI Semibold';"/>
 
-    <Button fx:id="goBackButton" text="Go Back" onAction="#handleGoBack" />
-</VBox>
+            <VBox fx:id="emailContainer">
+                <TextField fx:id="emailField" promptText="Email" prefWidth="250"/>
+            </VBox>
+
+            <VBox fx:id="passwordContainer">
+                <PasswordField fx:id="passwordField" promptText="Password" prefWidth="250"/>
+            </VBox>
+
+            <HBox fx:id="buttonContainer" spacing="10" alignment="CENTER" >
+                <Button text="Sign In" fx:id="signInButton" onAction="#handleSignIn"
+                        style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+                <Button text="Register" fx:id="registerButton" onAction="#handleRegister"
+                        style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+            </HBox>
+
+            <Button text="← Go Back" fx:id="goBackButton" onAction="#handleGoBack"
+                    style="-fx-background-color: transparent; -fx-text-fill: #888;"/>
+        </VBox>
+    </VBox>
+</HBox>
