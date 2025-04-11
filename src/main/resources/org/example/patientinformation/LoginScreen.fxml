@@ -10,7 +10,7 @@
       fx:controller="org.example.patientinformation.LoginController" spacing="10" alignment="CENTER" prefWidth="300">
     <Label text="Login" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
     <TextField fx:id="emailField" promptText="Email"/>
-    <TextField fx:id="passwordField" promptText="Password"/>
+    <PasswordField fx:id="passwordField" promptText="Password"/>
     <Button text="Login" onAction="#onLoginClick"/>
     <Label fx:id="messageLabel" text=""/>
 </VBox>
