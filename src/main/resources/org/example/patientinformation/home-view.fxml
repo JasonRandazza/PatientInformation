@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.shape.Circle?>
+<BorderPane xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            style="-fx-background-color: #f5f5f5;"
+            prefWidth="800" prefHeight="600">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 20;">
+            <Label text="Welcome back, Muhammad Hamza" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+        </HBox>
+    </top>
+
+    <center>
+        <VBox alignment="CENTER" spacing="15" style="-fx-padding: 20;">
+            <Label text="Dashboard metrics or content can go here."
+                   style="-fx-text-fill: #777777; -fx-font-size: 14px;" />
+        </VBox>
+    </center>
+
+    <right>
+        <VBox alignment="TOP_CENTER" spacing="15"
+              style="-fx-padding: 30;"
+              BorderPane.alignment="CENTER">
+
+            <StackPane>
+                <Circle radius="40" fill="#d0d0d0" stroke="#a0a0a0" strokeWidth="2"/>
+            </StackPane>
+
+            <Label text="Muhammad Hamza" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+            <VBox spacing="8" alignment="CENTER_LEFT">
+                <Label text="Gender: Male" />
+                <Label text="Age: 21" />
+                <Label text="Height: 5'10" />
+                <Label text="Weight: 150 lb" />
+            </VBox>
+        </VBox>
+    </right>
+
+</BorderPane>
