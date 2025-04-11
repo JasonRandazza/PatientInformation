@@ -7,22 +7,45 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.collections.FXCollections?>
-<VBox xmlns="http:javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="org.example.patientinformation.SignUpController" spacing="10" alignment="CENTER" prefWidth="300">
-    <Label text="Sign Up" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
-    <TextField fx:id="nameField" promptText="Name"/>
-    <TextField fx:id="emailField" promptText="Email"/>
-    <TextField fx:id="passwordField" promptText="Password"/>
-    <ComboBox fx:id="roleComboBox" promptText="Select Role">
-        <items>
-            <FXCollections fx:factory="observableArrayList">
-                <String fx:value="Patient"/>
-                <String fx:value="Doctor"/>
-                <String fx:value="Administrator"/>
-            </FXCollections>
-        </items>
-    </ComboBox>
-    <Button text="Sign Up" onAction="#onSignUpClick"/>
-    <Label fx:id="messageLabel" text=""/>
-</VBox>
 
+
+<StackPane xmlns="http://javafx.com/javafx/8"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="org.example.patientinformation.SignUpController"
+           prefWidth="900" prefHeight="600"
+           style="-fx-background-color: #f5f5f5;">
+
+    <VBox alignment="CENTER" spacing="12"
+          maxWidth="350"
+          style="-fx-background-color: #ffffff;
+                 -fx-padding: 20 30 20 30;
+                 -fx-background-radius: 15;
+                 -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 15, 0, 0, 4);">
+
+        <Label text="Sign Up"
+               style="-fx-font-size: 24px;
+                      -fx-font-family: 'Segoe UI Semibold';"/>
+
+        <TextField fx:id="nameField" promptText="Name" prefWidth="250"/>
+        <TextField fx:id="emailField" promptText="Email" prefWidth="250"/>
+        <PasswordField fx:id="passwordField" promptText="Password" prefWidth="250"/>
+
+        <ComboBox fx:id="roleComboBox" promptText="Select Role" prefWidth="250">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Patient"/>
+                    <String fx:value="Doctor"/>
+                    <String fx:value="Administrator"/>
+                </FXCollections>
+            </items>
+        </ComboBox>
+
+        <Label fx:id="messageLabel" text="" style="-fx-text-fill: red;"/>
+
+        <Button text="Sign Up" onAction="#onSignUpClick"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white;" />
+
+        <Button text="← Go Back" onAction="#goBack"
+                style="-fx-background-color: transparent; -fx-text-fill: #888;" />
+    </VBox>
+</StackPane>
