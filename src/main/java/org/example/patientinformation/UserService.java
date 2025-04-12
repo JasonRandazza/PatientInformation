@@ -17,9 +17,9 @@ public class UserService {
     }
 
     // Get user details by name
-    public Map<String, Object> getUserByName(String name) {
+    public Map<String, Object> getUserByName(String email) {
         try {
-            DocumentReference userRef = db.collection("users").document(name);
+            DocumentReference userRef = db.collection("users").document(email);
             DocumentSnapshot snapshot = userRef.get().get();
 
             if (snapshot.exists()) {
@@ -35,9 +35,9 @@ public class UserService {
     }
 
     //Update a user field
-    public boolean updateUserField(String name, String field, Object value) {
+    public boolean updateUserField(String email, String field, Object value) {
         try {
-            DocumentReference userRef = db.collection("users").document(name);
+            DocumentReference userRef = db.collection("users").document(email);
             ApiFuture<WriteResult> future = userRef.update(field, value);
             System.out.println("Updated '" + field + "' at " + future.get().getUpdateTime());
             return true;
@@ -49,10 +49,10 @@ public class UserService {
     }
 
     // Delete a user by name
-    public boolean deleteUser(String name) {
+    public boolean deleteUser(String email) {
         try {
-            db.collection("users").document(name).delete().get();
-            System.out.println("User " + name + " deleted.");
+            db.collection("users").document(email).delete().get();
+            System.out.println("User " + email + " deleted.");
             return true;
         } catch (Exception e) {
             System.err.println("Failed to delete user.");
