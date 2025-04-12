@@ -27,7 +27,6 @@ public class SignUpController {
     @FXML
     private void initialize() {
         // Populate the user type dropdown
-        userTypeChoice.getItems().addAll("Patient", "Doctor");
         userTypeChoice.setValue("Patient"); // Default selection
     }
 
