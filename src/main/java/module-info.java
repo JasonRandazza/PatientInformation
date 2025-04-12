@@ -11,6 +11,7 @@ module org.example.patientinformation {
     requires google.cloud.firestore;
     requires google.cloud.core;
     requires com.google.api.apicommon;
+    requires proto.google.cloud.firestore.v1;
 
     opens org.example.patientinformation to javafx.fxml;
     exports org.example.patientinformation;
