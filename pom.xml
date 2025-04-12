@@ -19,7 +19,6 @@
       <artifactId>firebase-admin</artifactId>
       <version>9.2.0</version> <!-- Use latest stable version -->
     </dependency>
-
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>

@@ -11,31 +11,31 @@ import java.io.IOException;
 
 public class FirestoreContext {
 
-    private static Firestore db;
+    private static Firestore firestore;
 
-    public static void initialize() {
-        if (db != null) return;
+    public static Firestore getFirestore() {
+        if (firestore == null) {
+            try {
 
-        try {
+                FileInputStream serviceAccount =
+                        new FileInputStream("src/main/resources/org/example/patientinformation/PatientInformationKey.json");
 
-            FileInputStream serviceAccount =
-                    new FileInputStream("src/main/resources/org/example/patientinformation/PatientInformationKey.json");
+                FirebaseOptions options = FirebaseOptions.builder()
+                        .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                        .build();
 
-            FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .build();
+                //Initialize FirebaseApp if not already initialized
+                if (FirebaseApp.getApps().isEmpty()) {
+                    FirebaseApp.initializeApp(options);
+                }
 
-            FirebaseApp.initializeApp(options);
-            db = FirestoreClient.getFirestore();
+                firestore = FirestoreClient.getFirestore();
 
-            System.out.println("Firebase initialized successfully.");
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            System.exit(1);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                throw new RuntimeException("Failed to initialize Firestore", ex);
+            }
         }
-    }
-    public static Firestore getDB() {
-        return db;
+        return firestore;
     }
 }

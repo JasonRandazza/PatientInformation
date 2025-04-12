@@ -30,7 +30,7 @@
         <TextField fx:id="emailField" promptText="Email" prefWidth="250"/>
         <PasswordField fx:id="passwordField" promptText="Password" prefWidth="250"/>
 
-        <ComboBox fx:id="roleComboBox" promptText="Select Role" prefWidth="250">
+        <ComboBox fx:id="userTypeChoice" promptText="Select Role" prefWidth="250">
             <items>
                 <FXCollections fx:factory="observableArrayList">
                     <String fx:value="Patient"/>
