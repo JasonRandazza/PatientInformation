@@ -27,5 +27,7 @@ public class PatientInformationApp extends Application {
             System.err.println("Failed to connect to Firestore: ");
             e.printStackTrace();
         }
+        // Launch the JavaFX application
+        launch(args);
     }
 }
