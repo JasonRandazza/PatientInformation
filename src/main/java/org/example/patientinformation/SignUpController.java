@@ -6,9 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 public class SignUpController {
@@ -16,29 +14,58 @@ public class SignUpController {
     @FXML
     private TextField emailField;
     @FXML
-    private TextField passwordField;
+    private PasswordField passwordField;
     @FXML
     private TextField nameField;
     @FXML
-    private ComboBox<String> roleComboBox;
+    private ComboBox<String> userTypeChoice;
     @FXML
     private Label messageLabel;
+
+    private final AuthService authService = new AuthService();
+
+    @FXML
+    private void initialize() {
+        // Populate the user type dropdown
+        userTypeChoice.getItems().addAll("Patient", "Doctor");
+        userTypeChoice.setValue("Patient"); // Default selection
+    }
 
     @FXML
     private void onSignUpClick() {
         String email = emailField.getText();
         String password = passwordField.getText();
         String name = nameField.getText();
-        String role = roleComboBox.getValue();
+        String userType = userTypeChoice.getValue();
 
-        if(email.isEmpty() || password.isEmpty() || name.isEmpty() || role == null) {
-            messageLabel.setText("Please fill out all fields and select a role.");
+        if(email.isEmpty() || password.isEmpty() || name.isEmpty() || userType == null) {
+            showError("All fields are required.");
             return;
         }
 
-        //Create user account with selected role
-     //   UserService.createPatientAccount(email, password, name, role);
-        messageLabel.setText("Account created! Please log in.");
+        boolean success = authService.signUp(email, password, name, userType);
+
+        if (success) {
+            try {
+                Stage stage = (Stage) emailField.getScene().getWindow();
+                FXMLLoader loader;
+
+                if ("doctor".equalsIgnoreCase(userType)) {
+                    loader = new FXMLLoader(getClass().getResource("DoctorScreen.fxml"));
+                } else {
+                    loader = new FXMLLoader(getClass().getResource("PatientScreen.fxml"));
+                }
+
+                Scene scene = new Scene(loader.load());
+                stage.setScene(scene);
+                stage.setTitle(userType + " Dashboard");
+            } catch (Exception e) {
+                e.printStackTrace();
+                showError("Failed to load user screen.");
+            }
+        } else {
+            showError("Sign-up failed. User may already exist.");
+        }
     }
 
     public void goBack(ActionEvent actionEvent) {
@@ -52,5 +79,9 @@ public class SignUpController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void showError(String msg) {
+        messageLabel.setText(msg);
     }
 }
