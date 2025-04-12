@@ -1,21 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" spacing="15.0"
-      xmlns="http://javafx.com/javafx/21"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="org.example.patientinformation.DoctorLoginScreenController">
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.patientinformation.DoctorLoginScreenController"
+            style="-fx-background-color: #f4f6f8;">
 
-    <Label text="Doctor Login" style="-fx-font-size: 24px;" />
+    <center>
+        <VBox alignment="CENTER" spacing="20.0"
+              style="-fx-background-color: #ffffff; -fx-padding: 30; -fx-border-color: #cbd5e0; -fx-border-radius: 10; -fx-background-radius: 10;">
 
-    <TextField fx:id="usernameField" promptText="Username" />
-    <TextField fx:id="emailField" promptText="Email" />
-    <PasswordField fx:id="passwordField" promptText="Password" />
+            <Label text="Doctor Login Portal"
+                   style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
 
-    <HBox spacing="10">
-        <Button text="Login" onAction="#onLogin" />
-        <Button text="Go Back" onAction="#onGoBack" />
-    </HBox>
-</VBox>
+            <GridPane hgap="15" vgap="15">
+                <padding>
+                    <Insets top="10" right="30" bottom="10" left="30"/>
+                </padding>
+
+                <Label text="Username:" GridPane.rowIndex="0" GridPane.columnIndex="0"
+                       style="-fx-font-size: 14px; -fx-text-fill: #34495e;" />
+                <TextField fx:id="usernameField" promptText="Enter your username"
+                           GridPane.rowIndex="0" GridPane.columnIndex="1"
+                           style="-fx-background-radius: 5; -fx-border-radius: 5;" />
+
+                <Label text="Email:" GridPane.rowIndex="1" GridPane.columnIndex="0"
+                       style="-fx-font-size: 14px; -fx-text-fill: #34495e;" />
+                <TextField fx:id="emailField" promptText="Enter your email"
+                           GridPane.rowIndex="1" GridPane.columnIndex="1"
+                           style="-fx-background-radius: 5; -fx-border-radius: 5;" />
+
+                <Label text="Password:" GridPane.rowIndex="2" GridPane.columnIndex="0"
+                       style="-fx-font-size: 14px; -fx-text-fill: #34495e;" />
+                <PasswordField fx:id="passwordField" promptText="Enter your password"
+                               GridPane.rowIndex="2" GridPane.columnIndex="1"
+                               style="-fx-background-radius: 5; -fx-border-radius: 5;" />
+            </GridPane>
+
+            <HBox spacing="20" alignment="CENTER">
+                <Button text="Login" onAction="#onLogin"
+                        style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold; -fx-pref-width: 100;" />
+                <Button text="Go Back" onAction="#onGoBack"
+                        style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold; -fx-pref-width: 100;" />
+            </HBox>
+        </VBox>
+    </center>
+
+    <padding>
+        <Insets top="40" right="100" bottom="40" left="100"/>
+    </padding>
+</BorderPane>
