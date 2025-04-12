@@ -18,7 +18,7 @@ public class SignUpController {
     @FXML
     private TextField nameField;
     @FXML
-    private ChoiceBox<String> userTypeChoice;
+    private ComboBox<String> userTypeChoice;
     @FXML
     private Label messageLabel;
 
