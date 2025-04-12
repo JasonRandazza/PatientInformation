@@ -50,6 +50,6 @@
     </center>
 
     <padding>
-        <Insets top="40" right="100" bottom="40" left="100"/>
+        <Insets top="40" right="100" bottom="45" left="100"/>
     </padding>
 </BorderPane>
