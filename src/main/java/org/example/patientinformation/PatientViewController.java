@@ -55,7 +55,7 @@ public class PatientViewController {
             try {
                 Parent root = FXMLLoader.load(getClass().getResource("/org/example/patientinformation/StartMenu.fxml"));
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                stage.setScene(new Scene(root, 750, 750));
+                stage.setScene(new Scene(root, 755, 750));
                 stage.show();
             } catch (IOException e) {
                 e.printStackTrace();
