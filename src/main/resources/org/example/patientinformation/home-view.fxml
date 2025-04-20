@@ -9,12 +9,12 @@
 <?import javafx.scene.shape.Circle?>
 <BorderPane xmlns="http://javafx.com/javafx/8"
             xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.patientinformation.HomeViewController"
             style="-fx-background-color: #f5f5f5;"
             prefWidth="800" prefHeight="600">
-
     <top>
         <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 20;">
-            <Label text="Welcome back, Muhammad Hamza" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+            <Label fx:id = "welcomeLabel" text="Welcome back" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
         </HBox>
     </top>
 
@@ -34,7 +34,7 @@
                 <Circle radius="40" fill="#d0d0d0" stroke="#a0a0a0" strokeWidth="2"/>
             </StackPane>
 
-            <Label text="Muhammad Hamza" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+            <Label fx:id = "nameLabel" text="your name" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
 
             <VBox spacing="8" alignment="CENTER_LEFT">
                 <Label text="Gender: Male" />
