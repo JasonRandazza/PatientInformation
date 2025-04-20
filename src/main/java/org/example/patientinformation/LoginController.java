@@ -33,6 +33,8 @@ public class LoginController {
         boolean loginSuccess = authService.login(email, password);
         if(loginSuccess) {
             String userType = authService.getUserType(email);
+            String name = new UserService().getUserByEmail(email).get("name").toString();
+            LoggedInUser.setName(name);
             try {
                 Stage stage = (Stage) emailField.getScene().getWindow();
                 FXMLLoader loader;
@@ -65,4 +67,5 @@ public class LoginController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
 }

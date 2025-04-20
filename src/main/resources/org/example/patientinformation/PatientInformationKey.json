@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "patientinformation-f40da",
+  "private_key_id": "9065a66b23a66532ca44e869d78a4b2fd430d95c",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDGphyNnIEbdGjL\ndvuV2nBd2y4KYlEtMNnMW/2JI8Raer7OoNxfSD1RWm4FlotqFFLTSGmlE7bgK4x0\nqGQaWPryEhwh35STojMFL1ew7oVC/GW843jLK1N7XNZOCdtCxEEcIiBgDwOqDsiY\nt3QjGKcl+iONJTpt2uyjWgWOU9dwKG4Vn5IOpAUg+rnih9Bc303odjvkStmUq13P\nl3Cvi2A1mm2oM9tG7Qw7FI5UZBMnf/9UeAIBX8Jh9gWxIck3TW8jfbW7A95Eddmt\nfQPhawz/WtFp3rFblPMBqcRfEX4scVwpCosViEn0UWtF1SwQkaJZspgAc2cNFRyy\nKdQO7FfLAgMBAAECggEAXr73u2s8APZCzViQomavVXSmvvkpsp4sI1Z01KYkjusg\nerkqop9374dsFmo5UH0lC/TrvnpqrPzYXwO5yv9JoY+Vr2pOGSQxpXVxI8h/8vUj\nKTZtdKnThXFAHbSByZSFYX+9ZVOD8eZfMse9MsgdYPWvYzCwb5kNaNQU9k9y3+Dv\n94993gCxx0r/szADaZlaSX2a1pE69zsPInLRL3XoxA6BFxBNG6OEnnT+1qqSNe2n\nLi/z9No3swimMZElFaKAipW0W0oCSk/1KJ5e/7sAA3p+03Ljc+jppy5PKZ3Mo9It\njscfkbLOkCIJ6HlYb+Je045OJzAozk7exPzNLki4YQKBgQD+zDYPr+ad+vA+l73K\nSQ5LWAaYxDssKaQzcHyuvajE7FiNiCdrpAMxMPNKgi4QlHmQfa6ZCxarW+5dvS9P\nPMhcQstnLDBgqEiYqgEfhrcU7Vt4fb1WNguOCbrAor28fjo91aK9av9MwSZm6y3n\n8V4eclnmpEnL6aESO2VL65i7+QKBgQDHlhL2ijDdsHoJTbUFGQkL2DrLEv1V+pjH\nbNTJO0pe7UY5Hsaj69TOMrCDGV6kJAEAjhmrfX/X1h252rHm5d5G14nGiCgUVZxM\nCFHhhQ+qT7qQ6LWRzKxaPSvhD2n/jNfLBtMF02ZPlSWpFOXcvSUk81f1RlvC0qu0\n/soEhHF64wKBgAJTLrMZ8crDPWn0zICKBh1d4kGGmNugTaVCg4C8rkuNtIkmEuYC\nixzpy26EnZL9J9bPrsYqubw6jIRCc6oPbeyZl22Lk61uG6t48aWt/wGr4MfKre2Z\ndKWJJTEYyw5rQHDMAD4mOcojgQwzXSneo/M3K+bU3O+FZDjcXeJBdhVRAoGBAISt\nAOIfLyjP3fA9Ve6Tm+3hygOhFgOH2PQJJtK2tVOxS5NBIC9r4EVKcQhVXxKiVIA3\n9lyHyuqCDbS06rphaIeTVKVDcdFCr+njRfsy5x0CbzVRXRIVCyXZsEemZYJZ8EGo\nwbMHuuWAck6Z88vveLe9hGUqZml2fmqNTWH/YSidAoGBAMNXk6yJDgHGHjkxDqDv\nfV3P9255YPaWedjVNQJQqLMPlyIK0i3X5T7CxaDfrrxUcMVNmSf9b4qXuTH/zWh8\nWyC89tfoW7JUMc1iETZQsy+e8IqmUqy4z0Ixn0y2gTSvivj94IaFQ7bLkl3LMnxK\n2v+0mzVM0DqsNFAl89diuT18\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-fbsvc@patientinformation-f40da.iam.gserviceaccount.com",
+  "client_id": "117474433538718269630",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40patientinformation-f40da.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

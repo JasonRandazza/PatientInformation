@@ -60,4 +60,14 @@ public class UserService {
             return false;
         }
     }
+    public Map<String, Object> getUserByEmail(String email) {
+        try {
+            DocumentReference userRef = db.collection("users").document(email);
+            DocumentSnapshot snapshot = userRef.get().get();
+            return snapshot.exists() ? snapshot.getData() : null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
