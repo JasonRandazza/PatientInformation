@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:id="patientInfoBox" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.patientinformation.DoctorDashboardController" spacing="10" style="-fx-padding: 20;">
+    <HBox spacing="10">
+        <TextField fx:id="searchField" promptText="Search Patient..." />
+        <Button text="Search" onAction="#onSearch" />
+    </HBox>
+
+    <ListView fx:id="patientListView" onMouseClicked="#onPatientSelected" prefHeight="200"/>
+
+    <HBox spacing="10">
+        <Button fx:id="addPatientButton" text="Add Patient" onAction="#onAddPatient" />
+        <Button fx:id="editPatientButton" text="Edit Patient" onAction="#onEditPatient" />
+        <Button fx:id="deletePatientButton" text="Delete Patient" onAction="#onDeletePatient" />
+        <Button fx:id="viewAppointmentsButton" text="View Appointments" onAction="#onViewAppointments" />
+        <Button fx:id="viewBillingButton" text="View Billing" onAction="#onViewBilling" />
+        <Button fx:id="logoutButton" text="Logout" onAction="#onLogout" />
+    </HBox>
+</VBox>
