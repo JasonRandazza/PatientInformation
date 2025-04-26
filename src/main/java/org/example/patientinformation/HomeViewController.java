@@ -11,7 +11,10 @@ public class HomeViewController {
 
     @FXML
     public void initialize() {
+
         String userName = LoggedInUser.getName();
+        System.out.println("HomeView initialized. User: " + userName); // <-- ADD THIS
+
         welcomeLabel.setText("Welcome back, " + userName);
         nameLabel.setText(userName);
     }
