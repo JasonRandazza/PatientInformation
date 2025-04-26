@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.util.Map;
 
 public class PatientLoginScreenController {
 
@@ -57,8 +58,37 @@ public class PatientLoginScreenController {
 
     @FXML
     private void handleSignIn() {
-        loadScene("PatientView.fxml");
+        String email = emailField.getText().trim();
+        String password = passwordField.getText().trim();
+
+        if (email.isEmpty() || password.isEmpty()) {
+            showAlert(Alert.AlertType.ERROR, "Login Error", "Please enter both email and password.");
+            return;
+        }
+
+        AuthService authService = new AuthService();
+        boolean isAuthenticated = authService.login(email, password);
+
+        if (isAuthenticated) {
+            Map<String, Object> userData = new UserService().getUserByEmail(email);
+
+            if (userData != null) {
+                Object nameObj = userData.get("name");
+                if (nameObj != null) {
+                    LoggedInUser.setName(nameObj.toString());
+                } else {
+                    LoggedInUser.setName("User"); // fallback name if not found
+                }
+
+                loadScene("PatientView.fxml");
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Login Failed", "User data not found.");
+            }
+        } else {
+            showAlert(Alert.AlertType.ERROR, "Login Failed", "Invalid email or password.");
+        }
     }
+
 
     @FXML
     private void handleRegister() {
