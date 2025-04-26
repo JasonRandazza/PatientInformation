@@ -3,6 +3,8 @@ package org.example.patientinformation;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.event.ActionEvent;
 import javafx.scene.input.MouseEvent;
@@ -11,6 +13,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class DoctorDashboardController {
 
@@ -64,9 +68,6 @@ public class DoctorDashboardController {
     @FXML
     private void onPatientSelected(MouseEvent event) {
         selectedPatient = patientListView.getSelectionModel().getSelectedItem();
-        if (selectedPatient != null) {
-            showPatientDetails(selectedPatient);
-        }
     }
 
     private void showPatientDetails(PatientRecord patient) {
@@ -99,7 +100,6 @@ public class DoctorDashboardController {
 
         HBox searchBox = new HBox(10, searchField, createButton("Search", this::onSearch));
         patientInfoBox.getChildren().add(searchBox);
-
         patientInfoBox.getChildren().add(patientListView);
 
         HBox actionButtons = new HBox(10,
@@ -133,8 +133,17 @@ public class DoctorDashboardController {
         logoutConfirmation.setHeaderText("Are you sure you want to log out?");
         logoutConfirmation.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                Stage stage = (Stage) logoutButton.getScene().getWindow();
-                stage.close();
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/patientinformation/StartMenu.fxml"));
+                    Scene scene = new Scene(loader.load());
+                    Stage stage = (Stage) logoutButton.getScene().getWindow();
+                    stage.setScene(scene);
+                    stage.setTitle("Hospital Lab Home");
+                    stage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    showAlert("Error", "Unable to load home screen.");
+                }
             }
         });
     }
@@ -270,7 +279,6 @@ public class DoctorDashboardController {
             showAlert("Error", "Please select a patient to view appointments.");
         }
     }
-
 
     @FXML
     private void onViewBilling(ActionEvent event) {
