@@ -13,39 +13,74 @@
            xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="org.example.patientinformation.SignUpController"
            prefWidth="900" prefHeight="600"
-           style="-fx-background-color: #f5f5f5;">
+           style="-fx-background-image: url('scope.jpg');
+       -fx-background-size: cover;
+       -fx-background-position: center center;">
 
-    <VBox alignment="CENTER" spacing="12"
-          maxWidth="350"
-          style="-fx-background-color: #ffffff;
-                 -fx-padding: 20 30 20 30;
-                 -fx-background-radius: 15;
-                 -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 15, 0, 0, 4);">
+    <VBox alignment="CENTER" spacing="18" maxWidth="380"
+          style="-fx-background-color: white;
+                 -fx-padding: 35;
+                 -fx-background-radius: 18;
+                 -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 15, 0, 0, 6);">
 
+        <!-- Title -->
         <Label text="Sign Up"
-               style="-fx-font-size: 24px;
-                      -fx-font-family: 'Segoe UI Semibold';"/>
+               style="-fx-font-size: 28px;
+                      -fx-font-weight: bold;
+                      -fx-text-fill: #2c3e50;" />
 
-        <TextField fx:id="nameField" promptText="Name" prefWidth="250"/>
-        <TextField fx:id="emailField" promptText="Email" prefWidth="250"/>
-        <PasswordField fx:id="passwordField" promptText="Password" prefWidth="250"/>
+        <!-- Name -->
+        <VBox fx:id="nameContainer" spacing="4" alignment="CENTER_LEFT">
+            <Label text="Name" style="-fx-font-weight: bold; -fx-text-fill: #34495e;" />
+            <TextField fx:id="nameField" prefWidth="250" promptText="Full name"
+                       style="-fx-background-radius: 8; -fx-border-radius: 8;" />
+        </VBox>
 
-        <ComboBox fx:id="userTypeChoice" promptText="Select Role" prefWidth="250">
-            <items>
-                <FXCollections fx:factory="observableArrayList">
-                    <String fx:value="Patient"/>
-                    <String fx:value="Doctor"/>
-                    <String fx:value="Administrator"/>
-                </FXCollections>
-            </items>
-        </ComboBox>
+        <!-- Email -->
+        <VBox fx:id="emailContainer" spacing="4" alignment="CENTER_LEFT">
+            <Label text="Email" style="-fx-font-weight: bold; -fx-text-fill: #34495e;" />
+            <TextField fx:id="emailField" prefWidth="250" promptText="Email"
+                       style="-fx-background-radius: 8; -fx-border-radius: 8;" />
+        </VBox>
 
-        <Label fx:id="messageLabel" text="" style="-fx-text-fill: red;"/>
+        <!-- Password -->
+        <VBox fx:id="passwordContainer" spacing="4" alignment="CENTER_LEFT">
+            <Label text="Password" style="-fx-font-weight: bold; -fx-text-fill: #34495e;" />
+            <PasswordField fx:id="passwordField" prefWidth="250" promptText="Password"
+                           style="-fx-background-radius: 8; -fx-border-radius: 8;" />
+        </VBox>
 
+        <!-- Role -->
+        <VBox fx:id="roleContainer" spacing="4" alignment="CENTER_LEFT">
+            <Label text="Select Role" style="-fx-font-weight: bold; -fx-text-fill: #34495e;" />
+            <ComboBox fx:id="userTypeChoice" prefWidth="250"
+                      style="-fx-background-radius: 8; -fx-border-radius: 8;">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Patient" />
+                        <String fx:value="Doctor" />
+                    </FXCollections>
+                </items>
+            </ComboBox>
+        </VBox>
+
+        <!-- Error Message -->
+        <Label fx:id="messageLabel" text="" style="-fx-text-fill: red;" />
+
+        <!-- Buttons -->
         <Button text="Sign Up" onAction="#onSignUpClick"
-                style="-fx-background-color: #4CAF50; -fx-text-fill: white;" />
+                style="-fx-background-color: #3498db;
+                       -fx-text-fill: white;
+                       -fx-background-radius: 10;
+                       -fx-font-weight: bold;
+                       -fx-pref-width: 120;
+                       -fx-cursor: hand;" />
 
         <Button text="← Go Back" onAction="#goBack"
-                style="-fx-background-color: transparent; -fx-text-fill: #888;" />
+                style="-fx-background-color: transparent;
+                       -fx-text-fill: #2980b9;
+                       -fx-font-size: 13px;
+                       -fx-font-weight: bold;
+                       -fx-cursor: hand;" />
     </VBox>
 </StackPane>
