@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.patientinformation.ScheduleController"
+            style="-fx-background-color: white;"
+            prefWidth="800" prefHeight="600">
+
+    <!-- Title -->
+    <top>
+        <VBox alignment="CENTER" spacing="10" style="-fx-padding: 20;">
+            <Label text="Scheduling" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+        </VBox>
+    </top>
+
+    <!-- Main Content -->
+    <center>
+        <VBox fx:id="mainContainer" alignment="TOP_CENTER" spacing="25" style="-fx-padding: 10 30 30 30;">
+
+            <!-- Category Buttons -->
+            <VBox alignment="CENTER" spacing="10">
+                <Label text="Categories" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                <HBox alignment="CENTER" spacing="15">
+                    <ToggleButton fx:id="physicalBtn" text="Physical" styleClass="category-toggle"/>
+                    <ToggleButton fx:id="heartBtn" text="Heart" styleClass="category-toggle"/>
+                    <ToggleButton fx:id="brainBtn" text="Brain" styleClass="category-toggle"/>
+                </HBox>
+            </VBox>
+
+            <!-- Category Image -->
+            <ImageView fx:id="categoryImageView" fitHeight="100" fitWidth="100"/>
+
+            <!-- Schedule -->
+            <VBox alignment="CENTER" spacing="10">
+                <Label text="Schedule" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                <Button text="Select a Time"
+                        onAction="#openDateTimeDialog"
+                        style="-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 10;" />
+            </VBox>
+
+            <!-- Bookings Section -->
+            <VBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Bookings" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                <TableView fx:id="bookingsTable" prefHeight="200" style="-fx-border-color: lightgray;">
+                    <columns>
+                        <TableColumn fx:id="dateColumn" text="Date" prefWidth="200"/>
+                        <TableColumn fx:id="timeColumn" text="Time" prefWidth="150"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+        </VBox>
+    </center>
+</BorderPane>
