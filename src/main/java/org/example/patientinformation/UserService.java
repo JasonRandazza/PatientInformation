@@ -60,6 +60,17 @@ public class UserService {
             return false;
         }
     }
+    public boolean updateProfileImageUrl(String email, String imageUrl) {
+        try {
+            Firestore db = FirestoreContext.getFirestore();
+            db.collection("users").document(email).update("profileImage", imageUrl).get();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public Map<String, Object> getUserByEmail(String email) {
         try {
             DocumentReference userRef = db.collection("users").document(email);

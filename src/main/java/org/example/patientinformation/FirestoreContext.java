@@ -26,6 +26,7 @@ public class FirestoreContext {
 
                 FirebaseOptions options = FirebaseOptions.builder()
                         .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                        .setStorageBucket("patientinformation-f40da.firebasestorage.app")  // <-- add this line
                         .build();
 
                 //Initialize FirebaseApp if not already initialized
