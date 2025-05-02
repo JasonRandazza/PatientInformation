@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 
-<?import javafx.scene.shape.Circle?>
 <BorderPane xmlns="http://javafx.com/javafx/8"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.example.patientinformation.HomeViewController"
             style="-fx-background-color: #f5f5f5;"
             prefWidth="800" prefHeight="600">
+
     <top>
         <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 20;">
-            <Label fx:id = "welcomeLabel" text="Welcome back" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+            <Label fx:id="welcomeLabel"
+                   text="Welcome back"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold;" />
         </HBox>
     </top>
 
@@ -30,11 +30,24 @@
               style="-fx-padding: 30;"
               BorderPane.alignment="CENTER">
 
-            <StackPane>
-                <Circle radius="40" fill="#d0d0d0" stroke="#a0a0a0" strokeWidth="2"/>
+            <!-- Circular Profile Picture with Background -->
+            <StackPane fx:id="imageContainer"
+                       alignment="CENTER"
+                       style="-fx-background-radius: 50%; -fx-cursor: hand;"
+                       prefWidth="100" prefHeight="100">
+                <ImageView fx:id="profileImageView"
+                           fitWidth="100" fitHeight="100"
+                           preserveRatio="false" />
+                <Label fx:id="uploadLabel"
+                       text="Upload"
+                       style="-fx-text-fill: #888888; -fx-font-weight: bold;" />
             </StackPane>
 
-            <Label fx:id = "nameLabel" text="your name" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+
+            <Label fx:id="nameLabel"
+                   text="your name"
+                   style="-fx-font-size: 18px; -fx-font-weight: bold;" />
 
             <VBox spacing="8" alignment="CENTER_LEFT">
                 <Label text="Gender: Male" />
@@ -44,5 +57,4 @@
             </VBox>
         </VBox>
     </right>
-
 </BorderPane>

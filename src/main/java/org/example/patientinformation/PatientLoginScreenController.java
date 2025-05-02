@@ -67,27 +67,22 @@ public class PatientLoginScreenController {
         }
 
         AuthService authService = new AuthService();
-        boolean isAuthenticated = authService.login(email, password);
+        boolean isAuthenticated = authService.login(email, password, "Patient");
 
-        if (isAuthenticated) {
-            Map<String, Object> userData = new UserService().getUserByEmail(email);
-
-            if (userData != null) {
-                Object nameObj = userData.get("name");
-                if (nameObj != null) {
-                    LoggedInUser.setName(nameObj.toString());
-                } else {
-                    LoggedInUser.setName("User"); // fallback name if not found
-                }
-
-                loadScene("PatientView.fxml");
-            } else {
-                showAlert(Alert.AlertType.ERROR, "Login Failed", "User data not found.");
-            }
-        } else {
-            showAlert(Alert.AlertType.ERROR, "Login Failed", "Invalid email or password.");
+        if (!isAuthenticated) {
+            showAlert(Alert.AlertType.ERROR, "Login Failed", "Incorrect credentials or unauthorized role.");
+            return;
         }
+
+        // Retrieve and set name
+        Map<String, Object> userData = new UserService().getUserByEmail(email);
+        LoggedInUser.setName(userData != null && userData.get("name") != null ? userData.get("name").toString() : "User");
+        LoggedInUser.setEmail(email);
+
+
+        loadScene("PatientView.fxml");
     }
+
 
 
     @FXML
