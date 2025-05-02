@@ -21,8 +21,6 @@ public class AuthService {
     // Sign-up a new user
     public boolean signUp(String email, String password, String name, String userType) {
         try {
-
-            // Check if user exists
             DocumentReference userRef = db.collection("users").document(email);
             DocumentSnapshot snapshot = userRef.get().get();
 
@@ -31,14 +29,13 @@ public class AuthService {
                 return false;
             }
 
-            // Hash the password
             String hashedPassword = PasswordUtils.hashPassword(password);
 
-            // Create user document
             Map<String, Object> userData = new HashMap<>();
             userData.put("email", email);
             userData.put("password", hashedPassword);
-            userData.put("userType", userType); // e.g., "patient", "doctor"
+            userData.put("userType", userType);
+            userData.put("name", name);
 
             ApiFuture<WriteResult> result = userRef.set(userData);
             System.out.println("User created at: " + result.get().getUpdateTime());
@@ -50,8 +47,38 @@ public class AuthService {
         }
     }
 
-    // Authenticate login attempt
-    public boolean login(String email, String password) {
+    public boolean login(String email, String password, String expectedUserType) {
+        try {
+            DocumentReference userRef = db.collection("users").document(email);
+            DocumentSnapshot snapshot = userRef.get().get();
+
+            if (!snapshot.exists()) {
+                System.out.println("User does not exist");
+                return false;
+            }
+
+            String storedHash = snapshot.getString("password");
+            String actualUserType = snapshot.getString("userType");
+
+            if (storedHash == null || actualUserType == null) {
+                System.out.println("Invalid account data.");
+                return false;
+            }
+
+            if (!expectedUserType.equalsIgnoreCase(actualUserType)) {
+                System.out.println("Unauthorized login: expected " + expectedUserType + ", but found " + actualUserType);
+                return false;
+            }
+
+            return PasswordUtils.verifyPassword(password, storedHash);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    public boolean loginWithoutRoleCheck(String email, String password) {
         try {
             DocumentReference userRef = db.collection("users").document(email);
             DocumentSnapshot snapshot = userRef.get().get();
