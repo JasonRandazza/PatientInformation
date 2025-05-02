@@ -21,12 +21,6 @@
                     <Insets top="10" right="30" bottom="10" left="30"/>
                 </padding>
 
-                <Label text="Username:" GridPane.rowIndex="0" GridPane.columnIndex="0"
-                       style="-fx-font-size: 14px; -fx-text-fill: #34495e;" />
-                <TextField fx:id="usernameField" promptText="Enter your username"
-                           GridPane.rowIndex="0" GridPane.columnIndex="1"
-                           style="-fx-background-radius: 5; -fx-border-radius: 5;" />
-
                 <Label text="Email:" GridPane.rowIndex="1" GridPane.columnIndex="0"
                        style="-fx-font-size: 14px; -fx-text-fill: #34495e;" />
                 <TextField fx:id="emailField" promptText="Enter your email"
@@ -44,6 +38,8 @@
                 <Button text="Login" onAction="#onLogin"
                         style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold; -fx-pref-width: 100;" />
                 <Button text="Go Back" onAction="#onGoBack"
+                        style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold; -fx-pref-width: 100;" />
+                <Button text="Sign up" onAction="#onGoBack"
                         style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold; -fx-pref-width: 100;" />
             </HBox>
         </VBox>
