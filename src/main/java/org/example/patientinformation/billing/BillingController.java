@@ -1,16 +1,26 @@
 package org.example.patientinformation.billing;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import org.example.patientinformation.billing.*;
-
 import java.awt.Desktop;
 import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.UUID;
 
 public class BillingController {
+
+    private final BillingService svc = new BillingService();
+    private Invoice selectedInvoice;
+    private String patientEmail;    //set by Doctor- or Patient-*ScreenController
+    private String role;           // "doctor" or "patient"
+
+    private static final String STRIPE_FN_URL = "https://createcheckoutsession-ibnkkkswsa-uc.a.run.app";
 
     @FXML
     private Button currentBtn;
@@ -25,13 +35,9 @@ public class BillingController {
     private VBox billingList;
 
     @FXML
-    private Button payNowBtn;   //TODO: add fx:id in FXML for the pay button
+    private Button payNowBtn;     // "doctor" or "patient"
 
-    private final BillingService svc = new BillingService();
-
-    private String patientEmail; //set by Doctor- or Patient-*ScreenController
-    private String role;         // "doctor" or "patient"
-
+    //Initialize from DoctorDashboard or PatientDashboard
     @FXML
     public void initialize(String email, String role) {
         this.patientEmail = email;
@@ -39,10 +45,10 @@ public class BillingController {
         loadInvoices();
     }
 
-    //Doctor clicks "+ New" //TODO: hook it up in FXML or DoctorDashboardController
+    //Doctor adds a new invoice
     public void onAddInvoice(String description, long dollars) {
         if (!"doctor".equals(role)) return;
-        Invoice inv = new Invoice(UUID.randomUUID().toString(), dollars*100, description);
+        Invoice inv = new Invoice(UUID.randomUUID().toString(), dollars * 100, description);
         svc.save(patientEmail, inv);
         loadInvoices();
     }
@@ -57,16 +63,29 @@ public class BillingController {
         highlightButton(pastBtn, currentBtn);
     }
 
-    @FXML private void onPayNow() {
-        if (!"patient".equals(role)) return;
-        Invoice sel = (Invoice) billingList.getUserData();  //stored in loadInvoices()
-        if (sel==null || !"OPEN".equals(sel.getStatus())) return;
+    @FXML
+    private void onPayNow() {
+        if (selectedInvoice == null || !"OPEN".equals(selectedInvoice.getStatus())) return;
 
         try {
-            String url = StripeCheckout.fetchUrl(patientEmail, sel.getId()); //HTTPS fn call
-            Desktop.getDesktop().browse(URI.create(url));
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            String requestBody = String.format ("{\"email\":\"%s\", \"invoiceId\":\"%s\"}",
+                    patientEmail, selectedInvoice.getId());
+
+            HttpRequest req = HttpRequest.newBuilder()
+                    .uri(URI.create(STRIPE_FN_URL))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .build();
+
+            HttpClient client = HttpClient.newHttpClient();
+            HttpResponse<String> resp = client.send(req, HttpResponse.BodyHandlers.ofString());
+
+            JsonObject obj = JsonParser.parseString(resp.body()).getAsJsonObject();
+            String checkoutUrl = obj.get("url").getAsString();
+
+            Desktop.getDesktop().browse(new URI(checkoutUrl));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -80,10 +99,7 @@ public class BillingController {
             totalAmountLabel.setText("$"+total/100.0);
             list.forEach(this::addRow);
 
-            //Save last selected invoice as userData for PayNow button
-            billingList.setUserData(list.stream()
-                        .filter(i->"OPEN".equals(i.getStatus())).findFirst().orElse(null));
-
+            selectedInvoice = null;
             payNowBtn.setDisable(!"patient".equals(role) || total==0);
 
         } catch(Exception e) {
@@ -94,8 +110,19 @@ public class BillingController {
     private void addRow(Invoice i) {
         Label item = new Label(i.getDescription());
         Label amt = new Label("$"+i.getAmount()/100.0);
-        HBox.setHgrow(new Region(), Priority.ALWAYS);
-        HBox row = new HBox(10, item, new Region(), amt);
+        HBox spacer = new HBox();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        HBox row = new HBox(10, item, spacer, amt);
+        row.setOnMouseClicked(event -> {
+            if ("OPEN".equals(i.getStatus())) {
+                selectedInvoice = i;
+                payNowBtn.setDisable(false);
+            } else {
+                selectedInvoice = null;
+                payNowBtn.setDisable(true);
+            }
+        });
         billingList.getChildren().add(row);
 
     }
