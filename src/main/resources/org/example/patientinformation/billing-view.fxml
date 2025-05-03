@@ -6,7 +6,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/8"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.example.patientinformation.BillingController"
+            fx:controller="org.example.patientinformation.billing.BillingController"
             style="-fx-background-color: #f8f8f8;"
             prefWidth="800" prefHeight="600">
 
