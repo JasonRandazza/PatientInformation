@@ -8,6 +8,7 @@ import com.google.firebase.cloud.FirestoreClient;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class FirestoreContext {
 
@@ -17,8 +18,11 @@ public class FirestoreContext {
         if (firestore == null) {
             try {
 
-                FileInputStream serviceAccount =
-                        new FileInputStream("src/main/resources/org/example/patientinformation/PatientInformationKey.json");
+                InputStream serviceAccount = FirestoreContext.class.getResourceAsStream("/org/example/patientinformation/PatientInformationKey.json");
+
+                if (serviceAccount == null) {
+                    throw new RuntimeException("Could not find Firebase key in resources!");
+                }
 
                 FirebaseOptions options = FirebaseOptions.builder()
                         .setCredentials(GoogleCredentials.fromStream(serviceAccount))

@@ -19,7 +19,6 @@ public class PatientInformationApp extends Application {
     }
 
     public static void main(String[] args) {
-        // Initialize Firestore
         try {
             Firestore db = FirestoreContext.getFirestore();
             System.out.println("Firestore connected. Project ID: " + db.getOptions().getProjectId());
@@ -27,7 +26,6 @@ public class PatientInformationApp extends Application {
             System.err.println("Failed to connect to Firestore: ");
             e.printStackTrace();
         }
-        // Launch the JavaFX application
         launch(args);
     }
 }
