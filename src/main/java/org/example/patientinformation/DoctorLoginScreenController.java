@@ -48,11 +48,12 @@ public class DoctorLoginScreenController {
 
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/patientinformation/DoctorDashboard.fxml"));
-            Scene scene = new Scene(loader.load(), 750, 750);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/patientinformation/doctor-view.fxml"));
+            Scene scene = new Scene(loader.load(), 900, 600); // match dimensions in FXML
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(scene);
             stage.setTitle("Doctor Dashboard");
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Error", "Unable to load Doctor Dashboard.");

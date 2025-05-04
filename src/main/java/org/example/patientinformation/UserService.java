@@ -1,12 +1,13 @@
 package org.example.patientinformation;
 
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.DocumentReference;
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.WriteResult;
+import com.google.cloud.firestore.*;
+import com.google.firebase.cloud.FirestoreClient;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class UserService {
 
@@ -14,6 +15,18 @@ public class UserService {
 
     public UserService() {
         this.db = FirestoreContext.getFirestore();
+    }
+
+    // Get user details by email
+    public Map<String, Object> getUserByEmail(String email) {
+        try {
+            DocumentReference userRef = db.collection("users").document(email);
+            DocumentSnapshot snapshot = userRef.get().get();
+            return snapshot.exists() ? snapshot.getData() : null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     // Get user details by name
@@ -34,7 +47,7 @@ public class UserService {
         }
     }
 
-    //Update a user field
+    // Update a user field
     public boolean updateUserField(String email, String field, Object value) {
         try {
             DocumentReference userRef = db.collection("users").document(email);
@@ -60,9 +73,10 @@ public class UserService {
             return false;
         }
     }
+
+    // Update profile image
     public boolean updateProfileImageUrl(String email, String imageUrl) {
         try {
-            Firestore db = FirestoreContext.getFirestore();
             db.collection("users").document(email).update("profileImage", imageUrl).get();
             return true;
         } catch (Exception e) {
@@ -71,14 +85,35 @@ public class UserService {
         }
     }
 
-    public Map<String, Object> getUserByEmail(String email) {
+    // Get all users
+    public List<Map<String, Object>> getAllUsers() {
+        List<Map<String, Object>> users = new ArrayList<>();
         try {
-            DocumentReference userRef = db.collection("users").document(email);
-            DocumentSnapshot snapshot = userRef.get().get();
-            return snapshot.exists() ? snapshot.getData() : null;
-        } catch (Exception e) {
+            ApiFuture<QuerySnapshot> future = db.collection("users").get();
+            List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+            for (QueryDocumentSnapshot doc : documents) {
+                users.add(doc.getData());
+            }
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
-            return null;
         }
+        return users;
+    }
+
+    // Get all patients
+    public List<Map<String, Object>> getAllPatients() {
+        List<Map<String, Object>> patients = new ArrayList<>();
+        try {
+            ApiFuture<QuerySnapshot> future = db.collection("users").whereEqualTo("userType", "Patient").get();
+            List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+            for (QueryDocumentSnapshot doc : documents) {
+                Map<String, Object> data = doc.getData();
+                data.put("email", doc.getId()); // include email for future operations
+                patients.add(data);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return patients;
     }
 }

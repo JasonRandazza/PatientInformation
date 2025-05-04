@@ -13,6 +13,11 @@ public class Patient {
         this.medication = medication;
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
+
     public String getName() { return name; }
     public int getAge() { return age; }
     public String getDiagnosis() { return diagnosis; }
