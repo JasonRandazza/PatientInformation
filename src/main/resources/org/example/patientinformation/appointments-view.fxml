@@ -50,6 +50,7 @@
                     <columns>
                         <TableColumn fx:id="dateColumn" text="Date" prefWidth="200"/>
                         <TableColumn fx:id="timeColumn" text="Time" prefWidth="150"/>
+                        <TableColumn fx:id="categoryColumn" text="Category" prefWidth="150"/>
                     </columns>
                 </TableView>
             </VBox>

@@ -17,7 +17,6 @@ public class PatientInformationApp extends Application {
         stage.setScene(scene);
         stage.show();
     }
-
     public static void main(String[] args) {
         try {
             Firestore db = FirestoreContext.getFirestore();
