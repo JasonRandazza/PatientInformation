@@ -16,15 +16,15 @@
             <Label text="Doctor Portal"
                    style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" />
 
-            <Button text="Add Patient" onAction="#onAddPatient"
+            <Button fx:id="addPatientButton" text="Add Patient" onAction="#onAddPatient"
                     style="-fx-background-color: transparent; -fx-text-fill: white;" />
-            <Button text="Edit Patient" onAction="#onEditPatient"
+            <Button fx:id="editPatientButton" text="Edit Patient" onAction="#onEditPatient"
                     style="-fx-background-color: transparent; -fx-text-fill: white;" />
-            <Button text="Delete Patient" onAction="#onDeletePatient"
+            <Button fx:id="deletePatientButton" text="Delete Patient" onAction="#onDeletePatient"
                     style="-fx-background-color: transparent; -fx-text-fill: white;" />
-            <Button text="View Appointments" onAction="#onViewAppointments"
+            <Button fx:id="viewAppointmentsButton" text="View Appointments" onAction="#onViewAppointments"
                     style="-fx-background-color: transparent; -fx-text-fill: white;" />
-            <Button text="View Billing" onAction="#onViewBilling"
+            <Button fx:id="viewBillingButton" text="View Billing" onAction="#onViewBilling"
                     style="-fx-background-color: transparent; -fx-text-fill: white;" />
 
             <!-- Spacer -->
@@ -47,7 +47,7 @@
 
             <!-- Search Bar -->
             <HBox spacing="10">
-                <TextField fx:id="searchField" promptText="Search Patient..." HBox.hgrow="ALWAYS"/>
+                <TextField fx:id="searchField" promptText="Enter name to search..." HBox.hgrow="ALWAYS"/>
                 <Button text="Search" onAction="#onSearch" />
             </HBox>
 
