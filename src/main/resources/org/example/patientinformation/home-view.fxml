@@ -30,7 +30,7 @@
               style="-fx-padding: 30;"
               BorderPane.alignment="CENTER">
 
-            <!-- Circular Profile Picture with Background -->
+            <!-- Profile Picture -->
             <StackPane fx:id="imageContainer"
                        alignment="CENTER"
                        style="-fx-background-radius: 50%; -fx-cursor: hand;"
@@ -43,18 +43,32 @@
                        style="-fx-text-fill: #888888; -fx-font-weight: bold;" />
             </StackPane>
 
-
-
+            <!-- User Name -->
             <Label fx:id="nameLabel"
                    text="your name"
                    style="-fx-font-size: 18px; -fx-font-weight: bold;" />
 
+            <!-- Editable Fields -->
             <VBox spacing="8" alignment="CENTER_LEFT">
-                <Label text="Gender: Male" />
-                <Label text="Age: 21" />
-                <Label text="Height: 5'10" />
-                <Label text="Weight: 150 lb" />
+                <Label text="Gender:" />
+                <TextField fx:id="genderField" promptText="Enter gender" editable="false"/>
+
+                <Label text="Age:" />
+                <TextField fx:id="ageField" promptText="Enter age" editable="false"/>
+
+                <Label text="Height:" />
+                <TextField fx:id="heightField" promptText="Enter height" editable="false"/>
+
+                <Label text="Weight:" />
+                <TextField fx:id="weightField" promptText="Enter weight" editable="false"/>
             </VBox>
+
+            <!-- Edit / Save Button -->
+            <Button fx:id="editButton"
+                    text="Edit"
+                    onAction="#onEditOrSaveProfile"
+                    style="-fx-background-color: #3498db; -fx-text-fill: white;" />
         </VBox>
     </right>
+
 </BorderPane>

@@ -44,14 +44,21 @@
             </VBox>
 
             <!-- Bookings Section -->
-            <VBox spacing="10" alignment="CENTER_LEFT">
+            <!-- Bookings Section -->
+            <VBox spacing="10" alignment="CENTER">
                 <Label text="Bookings" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
                 <TableView fx:id="bookingsTable" prefHeight="200" style="-fx-border-color: lightgray;">
                     <columns>
                         <TableColumn fx:id="dateColumn" text="Date" prefWidth="200"/>
                         <TableColumn fx:id="timeColumn" text="Time" prefWidth="150"/>
+                        <TableColumn fx:id="categoryColumn" text="Category" prefWidth="150"/>
                     </columns>
                 </TableView>
+
+                <!-- 🔥 New Delete Button -->
+                <Button text="Delete Selected Appointment"
+                        onAction="#deleteSelectedAppointment"
+                        style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 8 16; -fx-background-radius: 10;" />
             </VBox>
 
         </VBox>
