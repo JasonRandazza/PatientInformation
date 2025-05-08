@@ -17,18 +17,6 @@ public class UserService {
         this.db = FirestoreContext.getFirestore();
     }
 
-    // Get user details by email
-    public Map<String, Object> getUserByEmail(String email) {
-        try {
-            DocumentReference userRef = db.collection("users").document(email);
-            DocumentSnapshot snapshot = userRef.get().get();
-            return snapshot.exists() ? snapshot.getData() : null;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     // Get user details by name
     public Map<String, Object> getUserByName(String email) {
         try {
@@ -47,7 +35,7 @@ public class UserService {
         }
     }
 
-    // Update a user field
+    //Update a user field
     public boolean updateUserField(String email, String field, Object value) {
         try {
             DocumentReference userRef = db.collection("users").document(email);
@@ -73,47 +61,30 @@ public class UserService {
             return false;
         }
     }
-
-    // Update profile image
+    public Map<String, Object> getUserByEmail(String email) {
+        try {
+            DocumentReference userRef = db.collection("users").document(email);
+            DocumentSnapshot snapshot = userRef.get().get();
+            return snapshot.exists() ? snapshot.getData() : null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     public boolean updateProfileImageUrl(String email, String imageUrl) {
         try {
-            db.collection("users").document(email).update("profileImage", imageUrl).get();
+            DocumentReference userRef = FirestoreContext.getFirestore().collection("users").document(email);
+            ApiFuture<WriteResult> future = userRef.update("profileImage", imageUrl);
+            System.out.println("Profile image URL updated at: " + future.get().getUpdateTime());
             return true;
         } catch (Exception e) {
+            System.err.println("Error updating profile image URL:");
             e.printStackTrace();
             return false;
         }
     }
 
-    // Get all users
-    public List<Map<String, Object>> getAllUsers() {
-        List<Map<String, Object>> users = new ArrayList<>();
-        try {
-            ApiFuture<QuerySnapshot> future = db.collection("users").get();
-            List<QueryDocumentSnapshot> documents = future.get().getDocuments();
-            for (QueryDocumentSnapshot doc : documents) {
-                users.add(doc.getData());
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        return users;
-    }
-
-    // Get all patients
     public List<Map<String, Object>> getAllPatients() {
-        List<Map<String, Object>> patients = new ArrayList<>();
-        try {
-            ApiFuture<QuerySnapshot> future = db.collection("users").whereEqualTo("userType", "Patient").get();
-            List<QueryDocumentSnapshot> documents = future.get().getDocuments();
-            for (QueryDocumentSnapshot doc : documents) {
-                Map<String, Object> data = doc.getData();
-                data.put("email", doc.getId()); // include email for future operations
-                patients.add(data);
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        return patients;
+        return null;
     }
 }

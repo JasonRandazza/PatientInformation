@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.patientinformation.PaymentController"
+            style="-fx-padding: 30; -fx-background-color: white;"
+            prefWidth="400" prefHeight="300">
+
+    <center>
+        <VBox spacing="20" alignment="CENTER">
+
+            <Label text="Payment Options" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+            <RadioButton fx:id="fullAmountOption" text="Pay Full Amount" selected="true"/>
+            <HBox spacing="10" alignment="CENTER">
+                <RadioButton fx:id="otherAmountOption" text="Other Amount"/>
+                <TextField fx:id="customAmountField" promptText="Enter amount" disable="true"/>
+            </HBox>
+
+            <Button text="Confirm Payment" onAction="#handleConfirmPayment"
+                    style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-padding: 10 20;" />
+        </VBox>
+    </center>
+
+</BorderPane>
