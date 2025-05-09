@@ -116,4 +116,48 @@ public class UserService {
         }
         return patients;
     }
+
+    // Add a new patient record
+    public boolean addPatient(PatientRecord patient) {
+        try {
+            DocumentReference docRef = db.collection("users").document(patient.getEmail());
+            Map<String, Object> data = Map.of(
+                    "name", patient.getName(),
+                    "age", patient.getAge(),
+                    "diagnosis", patient.getDiagnosis(),
+                    "medication", patient.getMedications(),
+                    "billingAmount", patient.getBillingAmount(),
+                    "appointmentDate", patient.getAppointmentDate(),
+                    "gender", patient.getGender(),
+                    "userType", "Patient"
+            );
+            docRef.set(data).get();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Update an existing patient record
+    public boolean updatePatient(PatientRecord patient) {
+        try {
+            DocumentReference docRef = db.collection("users").document(patient.getEmail());
+            Map<String, Object> updates = Map.of(
+                    "name", patient.getName(),
+                    "age", patient.getAge(),
+                    "diagnosis", patient.getDiagnosis(),
+                    "medication", patient.getMedications(),
+                    "billingAmount", patient.getBillingAmount(),
+                    "appointmentDate", patient.getAppointmentDate(),
+                    "gender", patient.getGender()
+            );
+            docRef.update(updates).get();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }
