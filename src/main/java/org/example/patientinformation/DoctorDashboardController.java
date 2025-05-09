@@ -1,24 +1,18 @@
 package org.example.patientinformation;
 
-import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.QueryDocumentSnapshot;
-import com.google.cloud.firestore.QuerySnapshot;
-import com.google.firebase.cloud.FirestoreClient;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.event.ActionEvent;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.layout.HBox;
-import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
@@ -28,215 +22,336 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-
 
 public class DoctorDashboardController {
 
+    // ------------------------------------------------------------
+    //  FXML BINDINGS
+    // ------------------------------------------------------------
+    @FXML private Label welcomeLabel, nameLabel;
+    @FXML private Label genderLabel, ageLabel, heightLabel, weightLabel;
+    @FXML private ImageView profileImageView;
+    @FXML private StackPane imageContainer;
+    @FXML private Label uploadLabel;
+    @FXML private ListView<PatientRecord> patientListView;
+    @FXML private Button logoutButton, sendMessageButton, editPatientButton,
+            addPatientButton, deletePatientButton,
+            viewAppointmentsButton, viewBillingButton;
+    @FXML private TextField searchField;
+    @FXML private VBox patientInfoBox;
 
+    // ------------------------------------------------------------
+    //  STATE
+    // ------------------------------------------------------------
+    private PatientRecord selectedPatient = null;
+    private final ObservableList<PatientRecord> allPatients = FXCollections.observableArrayList();
+    private final UserService userService = new UserService();
+
+    // ------------------------------------------------------------
+    //  INITIALIZATION
+    // ------------------------------------------------------------
     @FXML
-    private Label welcomeLabel, nameLabel;
-
-    @FXML
-    private Label genderLabel, ageLabel, heightLabel, weightLabel;
-
-    @FXML
-    private ImageView profileImageView;
-
-    @FXML
-    private StackPane imageContainer;
-
-    @FXML
-    private Label uploadLabel;
-
-    @FXML
-    private ListView<PatientRecord> patientListView;
-
-    @FXML
-    private Button logoutButton;
-
-    @FXML
-    private Button sendMessageButton;
-
-    @FXML
-    private Button editPatientButton;
-
-    @FXML
-    private Button addPatientButton;
-
-    @FXML
-    private Button deletePatientButton;
-
-    @FXML
-    private Button viewAppointmentsButton;
-
-    @FXML
-    private Button viewBillingButton;
-
-    @FXML
-    private TextField searchField;
-
-    @FXML
-    private VBox patientInfoBox;
-
-
-    private PatientRecord selectedPatient;
-
-    private ObservableList<PatientRecord> allPatients = FXCollections.observableArrayList();
-
-    @FXML
-    public void initialize() {
-        loadLoggedInUserInfo();
+    private void initialize() {
+        patientListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            selectedPatient = newVal;
+        });
+        refreshPatients();
+        showMainDashboard();
     }
-    @FXML
-    private void loadLoggedInUserInfo() {
-        String name = LoggedInUser.getName();
-        String email = LoggedInUser.getEmail();
-
-        if (welcomeLabel != null) welcomeLabel.setText("Welcome back, Dr. " + name);
-        if (nameLabel != null) nameLabel.setText(name);
-
-        if (profileImageView != null) {
-            Circle clip = new Circle(50, 50, 50);
-            profileImageView.setClip(clip);
-        }
-
-        if (uploadLabel != null) uploadLabel.setVisible(true);
-
-        if (imageContainer != null) {
-            imageContainer.setOnMouseClicked(this::onProfileImageClick);
-        }
-
-        Map<String, Object> userData = new UserService().getUserByEmail(email);
-        if (userData != null) {
-            if (userData.get("profileImage") != null && profileImageView != null) {
-                profileImageView.setImage(new Image(userData.get("profileImage").toString()));
-                uploadLabel.setVisible(false);
-            }
-
-            if (userData.get("gender") != null && genderLabel != null)
-                genderLabel.setText("Gender: " + userData.get("gender"));
-            if (userData.get("age") != null && ageLabel != null)
-                ageLabel.setText("Age: " + userData.get("age"));
-            if (userData.get("height") != null && heightLabel != null)
-                heightLabel.setText("Height: " + userData.get("height"));
-            if (userData.get("weight") != null && weightLabel != null)
-                weightLabel.setText("Weight: " + userData.get("weight"));
-        }
-    }
-
-   /* @FXML
+    // ------------------------------------------------------------
+    //  PATIENT LIST LOADING / REFRESHING
+    // ------------------------------------------------------------
     private void loadPatients() {
         allPatients.clear();
-        UserService userService = new UserService();
-
         List<Map<String, Object>> firebasePatients = userService.getAllPatients();
-        Map<String, Object> userData = new UserService().getUserByEmail(LoggedInUser.getEmail());
-
-        String gender = userData != null && userData.get("gender") != null
-                ? userData.get("gender").toString()
-                : "Unknown";
-
         for (Map<String, Object> data : firebasePatients) {
             String name = (String) data.getOrDefault("name", "N/A");
             int age = Integer.parseInt(data.getOrDefault("age", "0").toString());
-            String diagnosis = data.getOrDefault("diagnosis", "N/A").toString(); // optional field
-            String medication = data.getOrDefault("medication", "N/A").toString(); // optional field
+            String diagnosis = data.getOrDefault("diagnosis", "N/A").toString();
+            String medication = data.getOrDefault("medication", "N/A").toString();
+            double billingAmt = Double.parseDouble(data.getOrDefault("billingAmount", "0").toString());
+            String apptDate = data.getOrDefault("appointmentDate", "N/A").toString();
+            String email = data.getOrDefault("email", "").toString();
+            String gender = data.getOrDefault("gender", "Unknown").toString();
 
-            PatientRecord record = new PatientRecord(
-                    name,
-                    age,
-                    diagnosis,
-                    medication,
-                    0.0,
-                    "N/A",
-                    LoggedInUser.getEmail(),
-                    gender
-            );
-
+            PatientRecord record = new PatientRecord(name, age, diagnosis, medication, billingAmt,
+                    apptDate, email, gender);
             allPatients.add(record);
         }
-
         patientListView.setItems(allPatients);
     }
-*/
 
-
-    @FXML
-    private void onProfileImageClick(MouseEvent event) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Choose Profile Image");
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
-        );
-
-        File file = fileChooser.showOpenDialog(profileImageView.getScene().getWindow());
-        if (file != null) {
-            try {
-                String imageUrl = StorageService.uploadProfileImage(LoggedInUser.getEmail(), file);
-                new UserService().updateProfileImageUrl(LoggedInUser.getEmail(), imageUrl);
-                profileImageView.setImage(new Image(imageUrl));
-                uploadLabel.setVisible(false);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    private void refreshPatients() {
+        loadPatients();
+        patientListView.refresh();
     }
 
+    // ------------------------------------------------------------
+    //  CRUD BUTTON HANDLERS
+    // ------------------------------------------------------------
 
-
-
+    // ADD PATIENT --------------------------------------------------
     @FXML
-    private void onPatientSelected(MouseEvent event) {
-        selectedPatient = patientListView.getSelectionModel().getSelectedItem();
-    }
-
-    private void showPatientDetails(PatientRecord patient) {
+    private void onAddPatient(ActionEvent event) {
         patientInfoBox.getChildren().clear();
 
-        Text title = createBoldText("Patient Details");
-        Text nameCategory = createBoldText("Name");
-        Text nameValue = new Text(patient.getName());
+        TextField emailField = new TextField();
+        emailField.setPromptText("Enter unique email address");
 
-        Text ageCategory = createBoldText("Age");
-        Text ageValue = new Text(String.valueOf(patient.getAge()));
+        TextField nameField = new TextField();
+        nameField.setPromptText("Enter full name");
 
-        Text diagnosisCategory = createBoldText("Diagnosis");
-        Text diagnosisValue = new Text(patient.getDiagnosis());
+        TextField ageField = new TextField();
+        ageField.setPromptText("Enter patient age");
 
-        Button goBackButton = new Button("Go Back");
-        goBackButton.setOnAction(e -> showMainDashboard());
+        TextField diagnosisField = new TextField();
+        diagnosisField.setPromptText("Enter diagnosis details");
+
+        TextField medicationField = new TextField();
+        medicationField.setPromptText("Enter medications (comma-separated)");
+
+        TextField billingField = new TextField();
+        billingField.setPromptText("Enter billing amount (e.g., 200.00)");
+
+        ComboBox<String> genderBox = new ComboBox<>();
+        genderBox.getItems().addAll("Male", "Female", "Other");
+        genderBox.setPromptText("Select gender");
+
+        DatePicker appointmentPicker = new DatePicker();
+        appointmentPicker.setPromptText("Select appointment date");
+
+        Button saveButton = new Button("Save Patient");
+        saveButton.setOnAction(e -> {
+            try {
+                String email = emailField.getText().trim().toLowerCase();
+                String name = nameField.getText().trim();
+                int age = Integer.parseInt(ageField.getText().trim());
+                String diagnosis = diagnosisField.getText().trim();
+                String medication = medicationField.getText().trim();
+                double billingAmount = Double.parseDouble(billingField.getText().trim());
+                String gender = genderBox.getValue() != null ? genderBox.getValue() : "Unknown";
+                String appointmentDate = appointmentPicker.getValue() != null ? appointmentPicker.getValue().toString() : "N/A";
+
+                if (email.isEmpty() || name.isEmpty()) {
+                    showAlert("Error", "Email and Name are required.");
+                    return;
+                }
+
+                PatientRecord newPatient = new PatientRecord(
+                        name, age, diagnosis, medication, billingAmount, appointmentDate, email, gender);
+
+                boolean ok = userService.addPatient(newPatient);
+                if (ok) {
+                    showAlert("Success", "Patient added successfully.");
+                    refreshPatients();
+                    showMainDashboard();
+                } else {
+                    showAlert("Error", "Failed to add patient. Check logs.");
+                }
+            } catch (NumberFormatException ex) {
+                showAlert("Error", "Invalid input for age or billing amount.");
+            }
+        });
+
+        Button goBackButton = createGoBackButton();
 
         patientInfoBox.getChildren().addAll(
-                title,
-                nameCategory, nameValue,
-                ageCategory, ageValue,
-                diagnosisCategory, diagnosisValue,
-                goBackButton
+                createBoldText("Add New Patient"),
+                emailField, nameField, ageField, diagnosisField,
+                medicationField, billingField,
+                genderBox, appointmentPicker,
+                saveButton, goBackButton
+        );
+    }
+
+
+
+    // EDIT PATIENT -------------------------------------------------
+    @FXML
+    private void onEditPatient(ActionEvent event) {
+        selectedPatient = patientListView.getSelectionModel().getSelectedItem();
+
+        if (selectedPatient == null) {
+            showAlert("Error", "Please select a patient to edit.");
+            return;
+        }
+
+        patientInfoBox.getChildren().clear();
+
+        TextField nameField = new TextField(selectedPatient.getName());
+        nameField.setPromptText("Enter full name");
+
+        TextField ageField = new TextField(String.valueOf(selectedPatient.getAge()));
+        ageField.setPromptText("Enter patient age");
+
+        TextField diagnosisField = new TextField(selectedPatient.getDiagnosis());
+        diagnosisField.setPromptText("Enter diagnosis details");
+
+        TextField medicationField = new TextField(selectedPatient.getMedications());
+        medicationField.setPromptText("Enter medications (comma-separated)");
+
+        TextField billingField = new TextField(String.valueOf(selectedPatient.getBillingAmount()));
+        billingField.setPromptText("Enter billing amount (e.g., 200.00)");
+
+        ComboBox<String> genderBox = new ComboBox<>();
+        genderBox.getItems().addAll("Male", "Female", "Other");
+        genderBox.setValue(selectedPatient.getGender());
+        genderBox.setPromptText("Select gender");
+
+        DatePicker appointmentPicker = new DatePicker();
+        appointmentPicker.setPromptText("Select appointment date");
+        try {
+            if (!selectedPatient.getAppointmentDate().equals("N/A")) {
+                appointmentPicker.setValue(java.time.LocalDate.parse(selectedPatient.getAppointmentDate()));
+            }
+        } catch (Exception e) {
+            appointmentPicker.setPromptText("Invalid format");
+        }
+
+        Button updateButton = new Button("Update Patient");
+        updateButton.setOnAction(e -> {
+            try {
+                selectedPatient.setName(nameField.getText().trim());
+                selectedPatient.setAge(Integer.parseInt(ageField.getText().trim()));
+                selectedPatient.setDiagnosis(diagnosisField.getText().trim());
+                selectedPatient.setMedications(medicationField.getText().trim());
+                selectedPatient.setBillingAmount(Double.parseDouble(billingField.getText().trim()));
+                selectedPatient.setGender(genderBox.getValue());
+                selectedPatient.setAppointmentDate(
+                        appointmentPicker.getValue() != null ? appointmentPicker.getValue().toString() : "N/A"
+                );
+
+                boolean ok = userService.updatePatient(selectedPatient);
+                if (ok) {
+                    showAlert("Success", "Patient updated successfully.");
+                    refreshPatients();
+                    showMainDashboard();
+                } else {
+                    showAlert("Error", "Failed to update patient. Check logs.");
+                }
+            } catch (NumberFormatException ex) {
+                showAlert("Error", "Invalid input for age or billing amount.");
+            }
+        });
+
+        Button goBackButton = createGoBackButton();
+
+        patientInfoBox.getChildren().addAll(
+                createBoldText("Edit Patient"),
+                nameField, ageField, diagnosisField,
+                medicationField, billingField,
+                genderBox, appointmentPicker,
+                updateButton, goBackButton
+        );
+    }
+
+
+    // DELETE PATIENT ----------------------------------------------
+    @FXML
+    private void onDeletePatient(ActionEvent event) {
+        if (selectedPatient == null) {
+            showAlert("Error", "Please select a patient to delete.");
+            return;
+        }
+
+        Alert deleteConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
+        deleteConfirmation.setTitle("Delete Patient");
+        deleteConfirmation.setHeaderText("Are you sure you want to delete this patient?");
+        deleteConfirmation.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                boolean ok = userService.deleteUser(selectedPatient.getEmail());
+                if (ok) {
+                    showAlert("Success", "Patient deleted.");
+                    selectedPatient = null;
+                    refreshPatients();
+                    showMainDashboard();
+                } else {
+                    showAlert("Error", "Failed to delete patient. Check logs.");
+                }
+            }
+        });
+    }
+
+    // ------------------------------------------------------------
+    //  SEARCH, APPOINTMENTS, BILLING (unchanged logic)
+    // ------------------------------------------------------------
+    @FXML
+    private void onSearch(ActionEvent event) {
+        String searchQuery = searchField.getText().trim().toLowerCase();
+        if (searchQuery.isEmpty()) {
+            refreshPatients();
+            return;
+        }
+        ObservableList<PatientRecord> results = FXCollections.observableArrayList();
+        for (PatientRecord p : allPatients) {
+            if (p.getName().toLowerCase().contains(searchQuery) ||
+                    p.getEmail().toLowerCase().contains(searchQuery)) {
+                results.add(p);
+            }
+        }
+        patientListView.setItems(results);
+    }
+
+    @FXML
+    private void onViewAppointments(ActionEvent event) {
+        if (selectedPatient == null) {
+            showAlert("Error", "Please select a patient to view appointments.");
+            return;
+        }
+        patientInfoBox.getChildren().clear();
+        patientInfoBox.getChildren().addAll(
+                createBoldText("Appointments for " + selectedPatient.getName()),
+                new Text("Upcoming Appointment: " + selectedPatient.getAppointmentDate()),
+                new Text("Diagnosis: " + selectedPatient.getDiagnosis()),
+                createGoBackButton()
         );
     }
 
     @FXML
+    private void onViewBilling(ActionEvent event) {
+        if (selectedPatient == null) {
+            showAlert("Error", "Please select a patient to view billing.");
+            return;
+        }
+        patientInfoBox.getChildren().clear();
+        patientInfoBox.getChildren().addAll(
+                createBoldText("Billing for " + selectedPatient.getName()),
+                new Text("Treatment Cost: $" + selectedPatient.getBillingAmount()),
+                new Text("Diagnosis: " + selectedPatient.getDiagnosis()),
+                createGoBackButton()
+        );
+    }
+
+    // ------------------------------------------------------------
+    //  UTILITIES
+    // ------------------------------------------------------------
     private void showMainDashboard() {
         patientInfoBox.getChildren().clear();
 
-        HBox searchBox = new HBox(10, searchField, createButton("Search", this::onSearch));
-        patientInfoBox.getChildren().add(searchBox);
+        String email = LoggedInUser.getEmail();
+        Map<String, Object> userData = userService.getUserByEmail(email);
+        String fullName = userData != null ? (String) userData.getOrDefault("name", "") : "";
+        String lastName = extractLastName(fullName);
+        welcomeLabel.setText("Welcome, Dr. " + lastName);
 
-        patientListView.setItems(FXCollections.observableArrayList()); // optional: clear list at first
-        patientInfoBox.getChildren().add(patientListView);
-
-        HBox actionButtons = new HBox(10,
-                addPatientButton,
-                editPatientButton,
-                deletePatientButton,
-                viewAppointmentsButton,
-                viewBillingButton,
-                logoutButton
+        patientInfoBox.getChildren().addAll(
+                welcomeLabel,
+                createSearchBox(),
+                patientListView
         );
-        patientInfoBox.getChildren().add(actionButtons);
     }
 
+    private String extractLastName(String fullName) {
+        if (fullName == null || fullName.trim().isEmpty()) return "";
+        String[] parts = fullName.trim().split("\\s+");
+        return parts.length > 1 ? parts[parts.length - 1] : parts[0];
+    }
+
+    private HBox createSearchBox() {
+        Button searchButton = new Button("Search");
+        searchButton.setOnAction(this::onSearch);
+        return new HBox(10, searchField, searchButton);
+    }
 
     private Text createBoldText(String content) {
         Text text = new Text(content);
@@ -245,19 +360,26 @@ public class DoctorDashboardController {
         return text;
     }
 
-    private Button createButton(String text, javafx.event.EventHandler<ActionEvent> event) {
-        Button button = new Button(text);
-        button.setOnAction(event);
-        return button;
+    private Button createGoBackButton() {
+        Button back = new Button("Go Back");
+        back.setOnAction(e -> showMainDashboard());
+        return back;
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setContentText(message);
+        alert.show();
     }
 
     @FXML
     private void onLogout(ActionEvent event) {
-        Alert logoutConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
-        logoutConfirmation.setTitle("Logout");
-        logoutConfirmation.setHeaderText("Are you sure you want to log out?");
-        logoutConfirmation.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Logout");
+        confirm.setHeaderText("Are you sure you want to log out?");
+        confirm.showAndWait().ifPresent(resp -> {
+            if (resp == ButtonType.OK) {
                 try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/patientinformation/StartMenu.fxml"));
                     Scene scene = new Scene(loader.load());
@@ -271,208 +393,5 @@ public class DoctorDashboardController {
                 }
             }
         });
-    }
-
-    @FXML
-    private void onAddPatient(ActionEvent event) {
-        patientInfoBox.getChildren().clear();
-
-        TextField nameField = new TextField();
-        nameField.setPromptText("Enter Name");
-
-        TextField ageField = new TextField();
-        ageField.setPromptText("Enter Age");
-
-        TextField diagnosisField = new TextField();
-        diagnosisField.setPromptText("Enter Diagnosis");
-
-        Button saveButton = new Button("Save Patient");
-        saveButton.setOnAction(e -> {
-            try {
-                String name = nameField.getText();
-                int age = Integer.parseInt(ageField.getText());
-                String diagnosis = diagnosisField.getText();
-
-                // Get user metadata
-                Map<String, Object> userData = new UserService().getUserByEmail(LoggedInUser.getEmail());
-                String gender = userData != null && userData.get("gender") != null
-                        ? userData.get("gender").toString()
-                        : "Unknown";
-
-                PatientRecord newPatient = new PatientRecord(
-                        name, age, diagnosis, "Medication", 0.0, "2025-05-01",
-                        LoggedInUser.getEmail(), gender
-                );
-
-                allPatients.add(newPatient);
-                showAlert("Success", "Patient added successfully.");
-                showMainDashboard();
-            } catch (NumberFormatException ex) {
-                showAlert("Error", "Invalid input for age.");
-            }
-        });
-
-        Button goBackButton = new Button("Go Back");
-        goBackButton.setOnAction(e -> showMainDashboard());
-
-        patientInfoBox.getChildren().addAll(
-                createBoldText("Add New Patient"),
-                nameField,
-                ageField,
-                diagnosisField,
-                saveButton,
-                goBackButton
-        );
-    }
-
-
-    @FXML
-    private void onEditPatient(ActionEvent event) {
-        if (selectedPatient != null) {
-            patientInfoBox.getChildren().clear();
-
-            TextField nameField = new TextField(selectedPatient.getName());
-            TextField ageField = new TextField(String.valueOf(selectedPatient.getAge()));
-            TextField diagnosisField = new TextField(selectedPatient.getDiagnosis());
-
-            Button updateButton = new Button("Update Patient");
-            updateButton.setOnAction(e -> {
-                try {
-                    String name = nameField.getText();
-                    int age = Integer.parseInt(ageField.getText());
-                    String diagnosis = diagnosisField.getText();
-
-                    // Get user metadata
-                    Map<String, Object> userData = new UserService().getUserByEmail(LoggedInUser.getEmail());
-                    String gender = userData != null && userData.get("gender") != null
-                            ? userData.get("gender").toString()
-                            : "Unknown";
-
-                    selectedPatient.setName(name);
-                    selectedPatient.setAge(age);
-                    selectedPatient.setDiagnosis(diagnosis);
-                    selectedPatient.setEmail(LoggedInUser.getEmail());
-                    selectedPatient.setGender(gender);
-
-                    patientListView.refresh();
-                    showAlert("Success", "Patient updated successfully.");
-                    showMainDashboard();
-                } catch (NumberFormatException ex) {
-                    showAlert("Error", "Invalid input for age.");
-                }
-            });
-
-            Button goBackButton = new Button("Go Back");
-            goBackButton.setOnAction(e -> showMainDashboard());
-
-            patientInfoBox.getChildren().addAll(
-                    createBoldText("Edit Patient"),
-                    nameField,
-                    ageField,
-                    diagnosisField,
-                    updateButton,
-                    goBackButton
-            );
-        } else {
-            showAlert("Error", "Please select a patient to edit.");
-        }
-    }
-
-
-    @FXML
-    private void onDeletePatient(ActionEvent event) {
-        if (selectedPatient != null) {
-            Alert deleteConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
-            deleteConfirmation.setTitle("Delete Patient");
-            deleteConfirmation.setHeaderText("Are you sure you want to delete this patient?");
-            deleteConfirmation.showAndWait().ifPresent(response -> {
-                if (response == ButtonType.OK) {
-                    allPatients.remove(selectedPatient);
-                    patientListView.setItems(allPatients);
-                    selectedPatient = null;
-                    showAlert("Success", "Patient deleted.");
-                    showMainDashboard();
-                }
-            });
-        } else {
-            showAlert("Error", "Please select a patient to delete.");
-        }
-    }
-
-    @FXML
-    private void onSearch(ActionEvent event) {
-        String searchQuery = searchField.getText().toLowerCase();
-        ObservableList<PatientRecord> searchResults = FXCollections.observableArrayList();
-
-        UserService userService = new UserService();
-        List<Map<String, Object>> firebasePatients = userService.getAllPatients();
-
-        for (Map<String, Object> data : firebasePatients) {
-            String name = data.getOrDefault("name", "").toString().toLowerCase();
-            String email = data.getOrDefault("email", "").toString().toLowerCase();
-
-            if (name.contains(searchQuery) || email.contains(searchQuery)) {
-                int age = Integer.parseInt(data.getOrDefault("age", "0").toString());
-                String diagnosis = data.getOrDefault("diagnosis", "N/A").toString();
-                String medication = data.getOrDefault("medication", "N/A").toString();
-                String gender = data.getOrDefault("gender", "Unknown").toString();
-
-                searchResults.add(new PatientRecord(
-                        data.getOrDefault("name", "N/A").toString(),
-                        age,
-                        diagnosis,
-                        medication,
-                        0.0,
-                        "N/A",
-                        email,
-                        gender
-                ));
-            }
-        }
-
-        patientListView.setItems(searchResults);
-    }
-
-    @FXML
-    private void onViewAppointments(ActionEvent event) {
-        if (selectedPatient != null) {
-            patientInfoBox.getChildren().clear();
-            patientInfoBox.getChildren().addAll(
-                    createBoldText("Appointments for " + selectedPatient.getName()),
-                    new Text("Upcoming Appointment: [To be scheduled]"),
-                    new Text("Diagnosis: " + selectedPatient.getDiagnosis()),
-                    createGoBackButton()
-            );
-        } else {
-            showAlert("Error", "Please select a patient to view appointments.");
-        }
-    }
-
-    @FXML
-    private void onViewBilling(ActionEvent event) {
-        if (selectedPatient != null) {
-            patientInfoBox.getChildren().clear();
-            patientInfoBox.getChildren().addAll(
-                    createBoldText("Billing for " + selectedPatient.getName()),
-                    new Text("Treatment Cost: $" + selectedPatient.getBillingAmount()),
-                    new Text("Diagnosis: " + selectedPatient.getDiagnosis()),
-                    createGoBackButton()
-            );
-        } else {
-            showAlert("Error", "Please select a patient to view billing.");
-        }
-    }
-
-    private Button createGoBackButton() {
-        Button goBackButton = new Button("Go Back");
-        goBackButton.setOnAction(e -> showMainDashboard());
-        return goBackButton;
-    }
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.show();
     }
 }
