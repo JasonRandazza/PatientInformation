@@ -5,16 +5,14 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
@@ -45,7 +43,7 @@ public class DoctorDashboardController {
     // ------------------------------------------------------------
     //  STATE
     // ------------------------------------------------------------
-    private PatientRecord selectedPatient;
+    private PatientRecord selectedPatient = null;
     private final ObservableList<PatientRecord> allPatients = FXCollections.observableArrayList();
     private final UserService userService = new UserService();
 
@@ -53,67 +51,13 @@ public class DoctorDashboardController {
     //  INITIALIZATION
     // ------------------------------------------------------------
     @FXML
-    public void initialize() {
-        loadLoggedInUserInfo();
-        loadPatients();
-        patientListView.setItems(allPatients);
-        patientListView.setOnMouseClicked(this::onPatientSelected);
+    private void initialize() {
+        patientListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            selectedPatient = newVal;
+        });
+        refreshPatients();
+        showMainDashboard();
     }
-
-    // ------------------------------------------------------------
-    //  USER INFO & PROFILE IMAGE
-    // ------------------------------------------------------------
-    private void loadLoggedInUserInfo() {
-        String name = LoggedInUser.getName();
-        String email = LoggedInUser.getEmail();
-
-        if (welcomeLabel != null) welcomeLabel.setText("Welcome back, Dr. " + name);
-        if (nameLabel != null) nameLabel.setText(name);
-
-        if (profileImageView != null) {
-            Circle clip = new Circle(50, 50, 50);
-            profileImageView.setClip(clip);
-        }
-
-        if (uploadLabel != null) uploadLabel.setVisible(true);
-        if (imageContainer != null) imageContainer.setOnMouseClicked(this::onProfileImageClick);
-
-        Map<String, Object> userData = userService.getUserByEmail(email);
-        if (userData != null) {
-            if (userData.get("profileImage") != null && profileImageView != null) {
-                profileImageView.setImage(new Image(userData.get("profileImage").toString()));
-                uploadLabel.setVisible(false);
-            }
-            if (userData.get("gender") != null && genderLabel != null)
-                genderLabel.setText("Gender: " + userData.get("gender"));
-            if (userData.get("age") != null && ageLabel != null)
-                ageLabel.setText("Age: " + userData.get("age"));
-            if (userData.get("height") != null && heightLabel != null)
-                heightLabel.setText("Height: " + userData.get("height"));
-            if (userData.get("weight") != null && weightLabel != null)
-                weightLabel.setText("Weight: " + userData.get("weight"));
-        }
-    }
-
-    private void onProfileImageClick(MouseEvent event) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Choose Profile Image");
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
-        );
-        File file = fileChooser.showOpenDialog(profileImageView.getScene().getWindow());
-        if (file != null) {
-            try {
-                String imageUrl = StorageService.uploadProfileImage(LoggedInUser.getEmail(), file);
-                userService.updateUserField(LoggedInUser.getEmail(), "profileImage", imageUrl);
-                profileImageView.setImage(new Image(imageUrl));
-                uploadLabel.setVisible(false);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     // ------------------------------------------------------------
     //  PATIENT LIST LOADING / REFRESHING
     // ------------------------------------------------------------
@@ -146,27 +90,35 @@ public class DoctorDashboardController {
     //  CRUD BUTTON HANDLERS
     // ------------------------------------------------------------
 
-    // Track which patient row was clicked
-    private void onPatientSelected(MouseEvent event) {
-        selectedPatient = patientListView.getSelectionModel().getSelectedItem();
-    }
-
     // ADD PATIENT --------------------------------------------------
     @FXML
     private void onAddPatient(ActionEvent event) {
         patientInfoBox.getChildren().clear();
 
         TextField emailField = new TextField();
-        emailField.setPromptText("Enter Email (unique)");
+        emailField.setPromptText("Enter unique email address");
 
         TextField nameField = new TextField();
-        nameField.setPromptText("Enter Name");
+        nameField.setPromptText("Enter full name");
 
         TextField ageField = new TextField();
-        ageField.setPromptText("Enter Age");
+        ageField.setPromptText("Enter patient age");
 
         TextField diagnosisField = new TextField();
-        diagnosisField.setPromptText("Enter Diagnosis");
+        diagnosisField.setPromptText("Enter diagnosis details");
+
+        TextField medicationField = new TextField();
+        medicationField.setPromptText("Enter medications (comma-separated)");
+
+        TextField billingField = new TextField();
+        billingField.setPromptText("Enter billing amount (e.g., 200.00)");
+
+        ComboBox<String> genderBox = new ComboBox<>();
+        genderBox.getItems().addAll("Male", "Female", "Other");
+        genderBox.setPromptText("Select gender");
+
+        DatePicker appointmentPicker = new DatePicker();
+        appointmentPicker.setPromptText("Select appointment date");
 
         Button saveButton = new Button("Save Patient");
         saveButton.setOnAction(e -> {
@@ -175,15 +127,18 @@ public class DoctorDashboardController {
                 String name = nameField.getText().trim();
                 int age = Integer.parseInt(ageField.getText().trim());
                 String diagnosis = diagnosisField.getText().trim();
+                String medication = medicationField.getText().trim();
+                double billingAmount = Double.parseDouble(billingField.getText().trim());
+                String gender = genderBox.getValue() != null ? genderBox.getValue() : "Unknown";
+                String appointmentDate = appointmentPicker.getValue() != null ? appointmentPicker.getValue().toString() : "N/A";
 
                 if (email.isEmpty() || name.isEmpty()) {
                     showAlert("Error", "Email and Name are required.");
                     return;
                 }
 
-                // For simplicity, default medication, billing, etc.
                 PatientRecord newPatient = new PatientRecord(
-                        name, age, diagnosis, "N/A", 0.0, "N/A", email, "Unknown");
+                        name, age, diagnosis, medication, billingAmount, appointmentDate, email, gender);
 
                 boolean ok = userService.addPatient(newPatient);
                 if (ok) {
@@ -194,7 +149,7 @@ public class DoctorDashboardController {
                     showAlert("Error", "Failed to add patient. Check logs.");
                 }
             } catch (NumberFormatException ex) {
-                showAlert("Error", "Invalid input for age.");
+                showAlert("Error", "Invalid input for age or billing amount.");
             }
         });
 
@@ -203,13 +158,19 @@ public class DoctorDashboardController {
         patientInfoBox.getChildren().addAll(
                 createBoldText("Add New Patient"),
                 emailField, nameField, ageField, diagnosisField,
+                medicationField, billingField,
+                genderBox, appointmentPicker,
                 saveButton, goBackButton
         );
     }
 
+
+
     // EDIT PATIENT -------------------------------------------------
     @FXML
     private void onEditPatient(ActionEvent event) {
+        selectedPatient = patientListView.getSelectionModel().getSelectedItem();
+
         if (selectedPatient == null) {
             showAlert("Error", "Please select a patient to edit.");
             return;
@@ -218,8 +179,34 @@ public class DoctorDashboardController {
         patientInfoBox.getChildren().clear();
 
         TextField nameField = new TextField(selectedPatient.getName());
+        nameField.setPromptText("Enter full name");
+
         TextField ageField = new TextField(String.valueOf(selectedPatient.getAge()));
+        ageField.setPromptText("Enter patient age");
+
         TextField diagnosisField = new TextField(selectedPatient.getDiagnosis());
+        diagnosisField.setPromptText("Enter diagnosis details");
+
+        TextField medicationField = new TextField(selectedPatient.getMedications());
+        medicationField.setPromptText("Enter medications (comma-separated)");
+
+        TextField billingField = new TextField(String.valueOf(selectedPatient.getBillingAmount()));
+        billingField.setPromptText("Enter billing amount (e.g., 200.00)");
+
+        ComboBox<String> genderBox = new ComboBox<>();
+        genderBox.getItems().addAll("Male", "Female", "Other");
+        genderBox.setValue(selectedPatient.getGender());
+        genderBox.setPromptText("Select gender");
+
+        DatePicker appointmentPicker = new DatePicker();
+        appointmentPicker.setPromptText("Select appointment date");
+        try {
+            if (!selectedPatient.getAppointmentDate().equals("N/A")) {
+                appointmentPicker.setValue(java.time.LocalDate.parse(selectedPatient.getAppointmentDate()));
+            }
+        } catch (Exception e) {
+            appointmentPicker.setPromptText("Invalid format");
+        }
 
         Button updateButton = new Button("Update Patient");
         updateButton.setOnAction(e -> {
@@ -227,6 +214,12 @@ public class DoctorDashboardController {
                 selectedPatient.setName(nameField.getText().trim());
                 selectedPatient.setAge(Integer.parseInt(ageField.getText().trim()));
                 selectedPatient.setDiagnosis(diagnosisField.getText().trim());
+                selectedPatient.setMedications(medicationField.getText().trim());
+                selectedPatient.setBillingAmount(Double.parseDouble(billingField.getText().trim()));
+                selectedPatient.setGender(genderBox.getValue());
+                selectedPatient.setAppointmentDate(
+                        appointmentPicker.getValue() != null ? appointmentPicker.getValue().toString() : "N/A"
+                );
 
                 boolean ok = userService.updatePatient(selectedPatient);
                 if (ok) {
@@ -237,7 +230,7 @@ public class DoctorDashboardController {
                     showAlert("Error", "Failed to update patient. Check logs.");
                 }
             } catch (NumberFormatException ex) {
-                showAlert("Error", "Invalid input for age.");
+                showAlert("Error", "Invalid input for age or billing amount.");
             }
         });
 
@@ -246,9 +239,12 @@ public class DoctorDashboardController {
         patientInfoBox.getChildren().addAll(
                 createBoldText("Edit Patient"),
                 nameField, ageField, diagnosisField,
+                medicationField, billingField,
+                genderBox, appointmentPicker,
                 updateButton, goBackButton
         );
     }
+
 
     // DELETE PATIENT ----------------------------------------------
     @FXML
@@ -332,41 +328,36 @@ public class DoctorDashboardController {
     private void showMainDashboard() {
         patientInfoBox.getChildren().clear();
 
-        Label welcomeText = new Label("Welcome back");
-        welcomeText.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
-
-        HBox searchBox = new HBox(10, searchField, createButton("Search", this::onSearch));
-        searchBox.setAlignment(Pos.CENTER_LEFT);
-
-        refreshPatients();
+        String email = LoggedInUser.getEmail();
+        Map<String, Object> userData = userService.getUserByEmail(email);
+        String fullName = userData != null ? (String) userData.getOrDefault("name", "") : "";
+        String lastName = extractLastName(fullName);
+        welcomeLabel.setText("Welcome, Dr. " + lastName);
 
         patientInfoBox.getChildren().addAll(
-                welcomeText,
+                welcomeLabel,
                 createSearchBox(),
                 patientListView
         );
     }
-    private HBox createSearchBox() {
-        Button searchBtn = new Button("Search");
-        searchBtn.setOnAction(this::onSearch);
-        HBox searchBox = new HBox(10, searchField, searchBtn);
-        searchBox.setAlignment(Pos.CENTER_LEFT);
-        return searchBox;
+
+    private String extractLastName(String fullName) {
+        if (fullName == null || fullName.trim().isEmpty()) return "";
+        String[] parts = fullName.trim().split("\\s+");
+        return parts.length > 1 ? parts[parts.length - 1] : parts[0];
     }
 
-
+    private HBox createSearchBox() {
+        Button searchButton = new Button("Search");
+        searchButton.setOnAction(this::onSearch);
+        return new HBox(10, searchField, searchButton);
+    }
 
     private Text createBoldText(String content) {
         Text text = new Text(content);
         text.setFont(Font.font("Arial", 16));
         text.setStyle("-fx-font-weight: bold;");
         return text;
-    }
-
-    private Button createButton(String text, javafx.event.EventHandler<ActionEvent> evt) {
-        Button btn = new Button(text);
-        btn.setOnAction(evt);
-        return btn;
     }
 
     private Button createGoBackButton() {
@@ -382,7 +373,6 @@ public class DoctorDashboardController {
         alert.show();
     }
 
-    // LOGOUT (logic unchanged)
     @FXML
     private void onLogout(ActionEvent event) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
