@@ -22,7 +22,7 @@
 
     <!-- Center Content -->
     <center>
-        <VBox spacing="20" alignment="TOP_CENTER" style="-fx-padding: 20;">
+        <VBox fx:id="billingContainer" spacing="20" alignment="TOP_CENTER" style="-fx-padding: 20;">
             <!-- Total Amount Section -->
             <VBox alignment="CENTER" spacing="5">
                 <Label fx:id="totalAmountLabel"
@@ -32,13 +32,16 @@
                 <Label text="Total Payable"
                        style="-fx-font-size: 14px; -fx-text-fill: #666;" />
                 <Label style="-fx-font-size: 12px; -fx-text-fill: #aaa;">
-                    <text>$5 minimum amount due on 01/25/2020</text>
+
                 </Label>
                 <HBox spacing="10" alignment="CENTER">
                     <Button text="Pay Now"
-                            style="-fx-background-color: #7a4ff2; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 10 20;" />
-                    <Button text="📅"
-                            style="-fx-background-color: #e0e0e0; -fx-font-size: 16px; -fx-background-radius: 10; -fx-padding: 10 16;" />
+                            onAction="#handlePayNow"
+                            style="-fx-background-color: #7a4ff2; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 10 20;"/>
+
+                    <Button text="Download PDF" onAction="#handleDownloadPdf"
+
+                            style="-fx-background-color: #e0e0e0; -fx-font-size: 14px; -fx-background-radius: 10; -fx-padding: 10 16;" />
                 </HBox>
             </VBox>
 
@@ -51,19 +54,14 @@
                        style="-fx-font-size: 12px; -fx-text-fill: #aaa;" />
             </HBox>
 
-            <!-- Billing Entries -->
-            <VBox fx:id="billingList" spacing="10" style="-fx-padding: 0 20;">
-                <!-- Example Billing Entry -->
-                <HBox alignment="CENTER_LEFT" spacing="10">
-                    <Label text="Unknown"
-                           style="-fx-font-size: 14px; -fx-text-fill: #333;" />
-                    <Region HBox.hgrow="ALWAYS" />
-                    <Label
-                            style="-fx-font-size: 14px; -fx-font-weight: bold;" >
-                        <text>$0</text>
-                    </Label>
-                </HBox>
-            </VBox>
+            <!-- Billing Table -->
+            <TableView fx:id="billingTable" prefHeight="200" style="-fx-border-color: lightgray;">
+                <columns>
+                    <TableColumn fx:id="serviceColumn" text="Service" prefWidth="200"/>
+                    <TableColumn fx:id="dateColumn" text="Date" prefWidth="150"/>
+                    <TableColumn fx:id="costColumn" text="Cost" prefWidth="150"/>
+                </columns>
+            </TableView>
 
         </VBox>
     </center>

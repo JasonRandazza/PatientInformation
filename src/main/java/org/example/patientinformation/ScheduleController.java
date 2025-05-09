@@ -1,5 +1,8 @@
 package org.example.patientinformation;
 
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.*;
+import com.google.firebase.cloud.FirestoreClient;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -8,13 +11,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 import javafx.util.Pair;
 
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ScheduleController {
 
@@ -25,26 +30,30 @@ public class ScheduleController {
     @FXML private TableView<Appointment> bookingsTable;
     @FXML private TableColumn<Appointment, String> dateColumn;
     @FXML private TableColumn<Appointment, String> timeColumn;
+    @FXML private TableColumn<Appointment, String> categoryColumn;
 
     private final ToggleGroup categoryGroup = new ToggleGroup();
     private final ObservableList<Appointment> appointmentList = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
-        // Group category buttons
         physicalBtn.setToggleGroup(categoryGroup);
         heartBtn.setToggleGroup(categoryGroup);
         brainBtn.setToggleGroup(categoryGroup);
 
-        // Setup image switching
         physicalBtn.setOnAction(e -> updateImage("physical"));
         heartBtn.setOnAction(e -> updateImage("heart"));
         brainBtn.setOnAction(e -> updateImage("brain"));
 
-        // Setup bookings table
         dateColumn.setCellValueFactory(cell -> cell.getValue().dateProperty());
         timeColumn.setCellValueFactory(cell -> cell.getValue().timeProperty());
+        categoryColumn.setCellValueFactory(cell -> cell.getValue().categoryProperty());
         bookingsTable.setItems(appointmentList);
+
+        loadAppointmentsFromFirestore();
+        bookingsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+
     }
 
     private void updateImage(String category) {
@@ -107,14 +116,97 @@ public class ScheduleController {
         });
 
         dialog.showAndWait().ifPresent(result -> {
-            appointmentList.add(new Appointment(result.getKey().toString(), result.getValue()));
+            String category = getSelectedCategory();
+            Appointment appointment = new Appointment(result.getKey().toString(), result.getValue(), category);
+            appointmentList.add(appointment);
+            saveAppointmentToFirestore(appointment);
+
+            BillingManager.addBillingRecord(appointment);
+
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Appointment Scheduled");
             alert.setHeaderText(null);
-            alert.setContentText("Congratulations! Your appointment is booked for " +
-                    result.getKey() + " at " + result.getValue() + ".");
+            alert.setContentText("Your appointment is booked for " +
+                    result.getKey() + " at " + result.getValue() + " under " + category + ".");
             alert.showAndWait();
+
         });
     }
+
+    private String getSelectedCategory() {
+        if (physicalBtn.isSelected()) return "Physical";
+        if (heartBtn.isSelected()) return "Heart";
+        if (brainBtn.isSelected()) return "Brain";
+        return "Unspecified";
+    }
+
+    private void saveAppointmentToFirestore(Appointment appointment) {
+        Firestore db = FirestoreClient.getFirestore();
+        String userEmail = LoggedInUser.getEmail();
+        DocumentReference userDocRef = db.collection("users").document(userEmail);
+        CollectionReference appointmentsRef = userDocRef.collection("appointments");
+
+        Map<String, Object> appointmentData = new HashMap<>();
+        appointmentData.put("date", appointment.dateProperty().get());
+        appointmentData.put("time", appointment.timeProperty().get());
+        appointmentData.put("category", appointment.categoryProperty().get());
+
+        appointmentsRef.add(appointmentData);
+    }
+
+    private void loadAppointmentsFromFirestore() {
+        Firestore db = FirestoreClient.getFirestore();
+        String userEmail = LoggedInUser.getEmail();
+        CollectionReference appointmentsRef = db.collection("users").document(userEmail).collection("appointments");
+
+        ApiFuture<QuerySnapshot> future = appointmentsRef.get();
+        try {
+            List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+            for (QueryDocumentSnapshot doc : documents) {
+                String date = doc.getString("date");
+                String time = doc.getString("time");
+                String category = doc.getString("category");
+                Appointment appointment = new Appointment(date, time, category);
+                appointment.setFirestoreId(doc.getId());
+                appointmentList.add(appointment);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private void deleteSelectedAppointment() {
+        Appointment selected = bookingsTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select an appointment to delete.");
+            alert.showAndWait();
+            return;
+        }
+
+        Firestore db = FirestoreClient.getFirestore();
+        String userEmail = LoggedInUser.getEmail();
+        String docId = selected.getFirestoreId();
+
+        if (docId != null && !docId.isEmpty()) {
+            db.collection("users")
+                    .document(userEmail)
+                    .collection("appointments")
+                    .document(docId)
+                    .delete();
+        }
+
+        appointmentList.remove(selected);
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information");
+        alert.setHeaderText(null);
+        alert.setContentText("Appointment deleted successfully.");
+        alert.showAndWait();
+    }
+
+
 }

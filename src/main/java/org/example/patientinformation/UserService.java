@@ -30,48 +30,11 @@ public class UserService {
         }
     }
 
-    // Get all users (any userType)
-    public List<Map<String, Object>> getAllUsers() {
-        List<Map<String, Object>> users = new ArrayList<>();
-        try {
-            ApiFuture<QuerySnapshot> future = db.collection("users").get();
-            List<QueryDocumentSnapshot> documents = future.get().getDocuments();
-            for (QueryDocumentSnapshot doc : documents) {
-                Map<String, Object> data = doc.getData();
-                data.put("email", doc.getId()); // expose doc id as email
-                users.add(data);
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        return users;
-    }
-
-    // Get only patients (userType == "Patient")
-    public List<Map<String, Object>> getAllPatients() {
-        List<Map<String, Object>> patients = new ArrayList<>();
-        try {
-            ApiFuture<QuerySnapshot> future = db.collection("users")
-                    .whereEqualTo("userType", "Patient")
-                    .get();
-            List<QueryDocumentSnapshot> documents = future.get().getDocuments();
-            for (QueryDocumentSnapshot doc : documents) {
-                Map<String, Object> data = doc.getData();
-                data.put("email", doc.getId()); // include email for future ops
-                patients.add(data);
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        return patients;
-    }
-
-    // Get user details by name
+    // Get user details by name (note: same as getUserByEmail, might be redundant)
     public Map<String, Object> getUserByName(String email) {
         try {
             DocumentReference userRef = db.collection("users").document(email);
             DocumentSnapshot snapshot = userRef.get().get();
-
             if (snapshot.exists()) {
                 return snapshot.getData();
             } else {
@@ -130,7 +93,6 @@ public class UserService {
             data.put("gender", patient.getGender());
             data.put("userType", "Patient");
 
-            // "set" will create / overwrite
             db.collection("users").document(email).set(data).get();
             return true;
         } catch (Exception e) {
@@ -167,14 +129,51 @@ public class UserService {
         }
     }
 
-    // Update profile image
+    // Update profile image URL
     public boolean updateProfileImageUrl(String email, String imageUrl) {
         try {
             db.collection("users").document(email).update("profileImage", imageUrl).get();
             return true;
         } catch (Exception e) {
+            System.err.println("Error updating profile image URL:");
             e.printStackTrace();
             return false;
         }
+    }
+
+    // Get all users (any userType)
+    public List<Map<String, Object>> getAllUsers() {
+        List<Map<String, Object>> users = new ArrayList<>();
+        try {
+            ApiFuture<QuerySnapshot> future = db.collection("users").get();
+            List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+            for (QueryDocumentSnapshot doc : documents) {
+                Map<String, Object> data = doc.getData();
+                data.put("email", doc.getId());
+                users.add(data);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
+    // Get only patients (userType == "Patient")
+    public List<Map<String, Object>> getAllPatients() {
+        List<Map<String, Object>> patients = new ArrayList<>();
+        try {
+            ApiFuture<QuerySnapshot> future = db.collection("users")
+                    .whereEqualTo("userType", "Patient")
+                    .get();
+            List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+            for (QueryDocumentSnapshot doc : documents) {
+                Map<String, Object> data = doc.getData();
+                data.put("email", doc.getId());
+                patients.add(data);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return patients;
     }
 }
