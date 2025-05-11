@@ -22,9 +22,7 @@
                     style="-fx-background-color: transparent; -fx-text-fill: white;" />
             <Button fx:id="deletePatientButton" text="Delete Patient" onAction="#onDeletePatient"
                     style="-fx-background-color: transparent; -fx-text-fill: white;" />
-            <Button fx:id="viewAppointmentsButton" text="View Appointments" onAction="#onViewAppointments"
-                    style="-fx-background-color: transparent; -fx-text-fill: white;" />
-            <Button fx:id="viewBillingButton" text="View Billing" onAction="#onViewBilling"
+            <Button text="Add Record" onAction="#onAddRecord"
                     style="-fx-background-color: transparent; -fx-text-fill: white;" />
 
             <!-- Spacer -->

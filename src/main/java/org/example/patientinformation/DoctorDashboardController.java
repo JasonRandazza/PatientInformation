@@ -1,10 +1,13 @@
 package org.example.patientinformation;
 
+import com.google.cloud.firestore.Firestore;
+import com.google.firebase.cloud.FirestoreClient;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -293,32 +296,65 @@ public class DoctorDashboardController {
     }
 
     @FXML
-    private void onViewAppointments(ActionEvent event) {
+    private void onAddRecord(ActionEvent event) {
         if (selectedPatient == null) {
-            showAlert("Error", "Please select a patient to view appointments.");
+            showAlert("Error", "Please select a patient to add a medical record for.");
             return;
         }
-        patientInfoBox.getChildren().clear();
-        patientInfoBox.getChildren().addAll(
-                createBoldText("Appointments for " + selectedPatient.getName()),
-                new Text("Upcoming Appointment: " + selectedPatient.getAppointmentDate()),
-                new Text("Diagnosis: " + selectedPatient.getDiagnosis()),
-                createGoBackButton()
-        );
-    }
 
-    @FXML
-    private void onViewBilling(ActionEvent event) {
-        if (selectedPatient == null) {
-            showAlert("Error", "Please select a patient to view billing.");
-            return;
-        }
         patientInfoBox.getChildren().clear();
+
+        TextField doctorField = new TextField();
+        doctorField.setPromptText("Enter doctor name");
+
+        DatePicker datePicker = new DatePicker();
+        datePicker.setPromptText("Select record date");
+
+        TextField notesField = new TextField();
+        notesField.setPromptText("Enter notes");
+
+        TextField prescriptionField = new TextField();
+        prescriptionField.setPromptText("Enter prescription");
+
+        Button saveButton = new Button("Save Record");
+        saveButton.setOnAction(e -> {
+            String doctor = doctorField.getText().trim();
+            String notes = notesField.getText().trim();
+            String prescription = prescriptionField.getText().trim();
+            String date = datePicker.getValue() != null ? datePicker.getValue().toString() : "";
+
+            if (doctor.isEmpty() || notes.isEmpty() || prescription.isEmpty() || date.isEmpty()) {
+                showAlert("Error", "Please complete all fields.");
+                return;
+            }
+
+            Firestore db = FirestoreClient.getFirestore();
+            Map<String, Object> record = Map.of(
+                    "doctor", doctor,
+                    "notes", notes,
+                    "prescription", prescription,
+                    "date", date
+            );
+
+            db.collection("users")
+                    .document(selectedPatient.getEmail())
+                    .collection("medical_records")
+                    .add(record);
+
+            showAlert("Success", "Medical record added for " + selectedPatient.getName());
+            showMainDashboard();
+        });
+
+        Button backButton = createGoBackButton();
+
         patientInfoBox.getChildren().addAll(
-                createBoldText("Billing for " + selectedPatient.getName()),
-                new Text("Treatment Cost: $" + selectedPatient.getBillingAmount()),
-                new Text("Diagnosis: " + selectedPatient.getDiagnosis()),
-                createGoBackButton()
+                createBoldText("Add Medical Record for " + selectedPatient.getName()),
+                doctorField,
+                datePicker,
+                notesField,
+                prescriptionField,
+                saveButton,
+                backButton
         );
     }
 
