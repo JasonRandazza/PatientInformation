@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/8"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.patientinformation.DoctorMedicalRecordController"
+      spacing="25"
+      alignment="TOP_CENTER"
+      style="-fx-background-color: #f8f8f8; -fx-padding: 30;">
+
+    <!-- Title -->
+    <Label text="Medical Records"
+           style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #6a00ff;" />
+
+    <!-- Table -->
+    <TableView fx:id="recordTable"
+               prefHeight="400"
+               style="-fx-border-color: #e0e0e0; -fx-border-radius: 10; -fx-background-radius: 10;">
+        <columns>
+            <TableColumn fx:id="dateColumn" text="Date" prefWidth="120"/>
+            <TableColumn fx:id="doctorColumn" text="Doctor" prefWidth="150"/>
+            <TableColumn fx:id="notesColumn" text="Notes" prefWidth="300"/>
+            <TableColumn fx:id="prescriptionColumn" text="Prescription" prefWidth="200"/>
+        </columns>
+    </TableView>
+
+    <!-- Buttons -->
+    <HBox spacing="15" alignment="CENTER">
+        <Button text="Download Selected"
+                fx:id="downloadBtn"
+                style="-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 10; -fx-padding: 10 20;" />
+
+        <Button text="Add Test Record"
+                fx:id="addRecordBtn"
+                style="-fx-background-color: #e0e0e0; -fx-text-fill: #444; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 10 20;" />
+    </HBox>
+</VBox>
