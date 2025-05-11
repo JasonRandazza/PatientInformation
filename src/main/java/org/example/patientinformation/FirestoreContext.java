@@ -12,11 +12,15 @@ import java.io.InputStream;
 public class FirestoreContext {
 
     private static Firestore firestore;
+    private static Firestore testFirestore = null;
 
     public static Firestore getFirestore() {
+        if (testFirestore != null) {
+            return testFirestore;
+        }
+
         if (firestore == null) {
             try {
-
                 InputStream serviceAccount = FirestoreContext.class.getResourceAsStream("PatientInformationKey.json");
 
                 if (serviceAccount == null) {
@@ -41,4 +45,14 @@ public class FirestoreContext {
         }
         return firestore;
     }
+
+    // Enable test Firestore injection
+    public static void setTestFirestore(Firestore mockFirestore) {
+        testFirestore = mockFirestore;
+    }
+
+    public static void clearTestFirestore() {
+        testFirestore = null;
+    }
 }
+
