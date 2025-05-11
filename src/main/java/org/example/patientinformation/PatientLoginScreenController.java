@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -33,11 +34,15 @@ public class PatientLoginScreenController {
     @FXML
     private HBox buttonContainer;
 
+
+
+
     @FXML
     public void initialize() {
         if (emailContainer != null) animateNode(emailContainer, 0);
         if (passwordContainer != null) animateNode(passwordContainer, 200);
         if (buttonContainer != null) animateNode(buttonContainer, 400);
+
     }
 
     private void animateNode(Node node, int delay) {

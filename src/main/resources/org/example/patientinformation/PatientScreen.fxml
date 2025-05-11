@@ -1,40 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 
 <HBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.example.patientinformation.PatientLoginScreenController"
-      prefHeight="600" prefWidth="900">
+      prefHeight="600" prefWidth="1000">
 
-    <VBox alignment="CENTER" prefWidth="450"
-          style="-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #3d8bff, #6bc1ff);">
-<!--        <ImageView fitWidth="450" preserveRatio="true">-->
-<!--            <image>-->
-<!--                <Image url="@/images/leftPic.jpg" />-->
-<!--            </image>-->
-<!--        </ImageView>    -->
-    </VBox>
+    <!-- Left Image Panel -->
+    <StackPane prefWidth="400" maxWidth="400">
+        <ImageView fx:id="backgroundImageView"
+                   preserveRatio="false"
+                   fitWidth="400"
+                   fitHeight="1000">
+            <image>
+                <Image url="@images/patientSignIn.jpeg"/>
+            </image>
+        </ImageView>
+    </StackPane>
 
-    <VBox alignment="CENTER" spacing="20" prefWidth="450"
-          style="-fx-background-color: #ffffff; -fx-padding: 40;">
-
+    <!-- Right Login Panel -->
+    <VBox alignment="CENTER" spacing="20"
+          HBox.hgrow="ALWAYS"
+          style="-fx-background-color: #ffffff; -fx-padding: 60;">
         <VBox alignment="CENTER" spacing="15"
+              maxWidth="350"
               style="-fx-background-color: #ffffff; -fx-background-radius: 15; -fx-padding: 30; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 5);">
 
             <Label text="Login" style="-fx-font-size: 24px; -fx-font-family: 'Segoe UI Semibold';"/>
 
-            <VBox fx:id="emailContainer">
-                <TextField fx:id="emailField" promptText="Email" prefWidth="250"/>
-            </VBox>
+            <TextField fx:id="emailField" promptText="Email" prefWidth="250"/>
+            <PasswordField fx:id="passwordField" promptText="Password" prefWidth="250"/>
 
-            <VBox fx:id="passwordContainer">
-                <PasswordField fx:id="passwordField" promptText="Password" prefWidth="250"/>
-            </VBox>
-
-            <HBox fx:id="buttonContainer" spacing="10" alignment="CENTER" >
+            <HBox spacing="10" alignment="CENTER">
                 <Button text="Sign In" fx:id="signInButton" onAction="#handleSignIn"
                         style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
                 <Button text="Register" fx:id="registerButton" onAction="#handleRegister"

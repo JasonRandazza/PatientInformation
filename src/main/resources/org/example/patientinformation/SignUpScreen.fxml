@@ -13,7 +13,7 @@
            xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="org.example.patientinformation.SignUpController"
            prefWidth="900" prefHeight="600"
-           style="-fx-background-image: url('scope.jpg');
+           style="-fx-background-image: url('images/signUp.jpg');
        -fx-background-size: cover;
        -fx-background-position: center center;">
 

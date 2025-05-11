@@ -12,8 +12,8 @@ public class PatientInformationApp extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(PatientInformationApp.class.getResource("StartMenu.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 750, 750);
-        stage.setTitle("Hospital App");
+        Scene scene = new Scene(fxmlLoader.load(), 800 , 525);
+        stage.setTitle("Care First");
         stage.setScene(scene);
         stage.show();
     }

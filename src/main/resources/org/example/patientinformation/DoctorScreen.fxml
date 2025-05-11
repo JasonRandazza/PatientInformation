@@ -11,8 +11,13 @@
 
     <center>
         <VBox alignment="CENTER" spacing="20.0"
-              style="-fx-background-color: #ffffff; -fx-padding: 30; -fx-border-color: #cbd5e0; -fx-border-radius: 10; -fx-background-radius: 10;">
-
+              style="-fx-background-image: url('/images/doctorLogin.jpg');
+                     -fx-background-size: cover;
+                     -fx-background-position: center center;
+                     -fx-padding: 30;
+                     -fx-border-color: #cbd5e0;
+                     -fx-border-radius: 10;
+                     -fx-background-radius: 10;">
             <Label text="Doctor Login Portal"
                    style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
 
