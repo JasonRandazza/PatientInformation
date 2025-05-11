@@ -104,15 +104,15 @@ public class UserService {
     public List<Map<String, Object>> getAllPatients() {
         List<Map<String, Object>> patients = new ArrayList<>();
         try {
-            ApiFuture<QuerySnapshot> future = db.collection("users").whereEqualTo("userType", "Patient").get();
+            Firestore db = FirestoreContext.getFirestore();
+            ApiFuture<QuerySnapshot> future = db.collection("users").get();
             List<QueryDocumentSnapshot> documents = future.get().getDocuments();
             for (QueryDocumentSnapshot doc : documents) {
-                Map<String, Object> data = doc.getData();
-                data.put("email", doc.getId()); // include email for future operations
-                patients.add(data);
+                patients.add(doc.getData());
             }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            // This is what prevents the crash during the simulated test failure
+            System.err.println("Failed to retrieve patients: " + e.getMessage());
         }
         return patients;
     }
